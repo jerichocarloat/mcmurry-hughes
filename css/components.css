@@ -1,0 +1,702 @@
+/* =========================================================================
+   McMURRY & HUGHES — components.css
+   The system's own objects. Every one of them exists to carry the same
+   argument: the market continues past the edge of the search.
+
+   THE WINDOW      the mark, made physical — frame, searched field, one person
+   THE MAP         the signature artefact, live
+   THE LEDGER      counted facts, set as a table, never as cards
+   THE PLATE       photography, always cut by an edge
+   THE SHEET       real working documents, on paper, that lift when touched
+   ========================================================================= */
+
+/* ── 00 · ANIMATABLE CUSTOM PROPERTIES ─────────────────────────────────── */
+/* Registering these lets a marker's scale and offset be transitioned rather
+   than snapped, so the pointer's effect eases in and out instead of popping.
+   Where @property is unsupported the value still applies — it just changes
+   instantly, which is a downgrade nobody will notice.
+     --dx / --dy   ambient drift, written 60× a second by motion.js
+     --mx / --my   the lean towards a pointer
+     --s           the scale a nearby pointer gives a person            */
+
+@property --dx { syntax: '<length>'; inherits: false; initial-value: 0px }
+@property --dy { syntax: '<length>'; inherits: false; initial-value: 0px }
+@property --mx { syntax: '<length>'; inherits: false; initial-value: 0px }
+@property --my { syntax: '<length>'; inherits: false; initial-value: 0px }
+@property --s  { syntax: '<number>'; inherits: false; initial-value: 1 }
+
+/* ── 01 · THE WINDOW ───────────────────────────────────────────────────── */
+/* A precision paper object seen slightly from the side. The frame is the
+   boundary of what a company can see. The grey block, lower left, is the
+   market it is searching. The vermilion squares sit beyond it, on planes
+   further from the viewer, so moving the pointer literally shows you past
+   the edge of the search. Nothing here glows, rotates freely or floats. */
+
+.window{
+  position:relative;
+  perspective:1700px;
+  perspective-origin:62% 42%;
+}
+.window__obj{
+  position:relative;
+  width:100%;
+  aspect-ratio:3 / 2;
+  transform-style:preserve-3d;
+  /* three rotations compose: the pointer's, the one the page earns as it
+     scrolls past, and the slow idle turn the object never stops making */
+  transform:
+    translateY(var(--sty,0px))
+    rotateX(calc(var(--rx,0deg) + var(--srx,0deg) + var(--irx,0deg)))
+    rotateY(calc(var(--ry,0deg) + var(--sry,0deg) + var(--iry,0deg)));
+  transition:transform 1.2s var(--ease-depth);
+  will-change:transform;
+}
+
+/* the counted field the whole object sits on — ink hairlines, never grey,
+   because this is measurement and not a market */
+.window__field{
+  position:absolute;inset:0;
+  transform:translateZ(-9px);
+  background-image:
+    repeating-linear-gradient(90deg,rgba(14,15,18,.055) 0 1px,transparent 1px 8.3333%),
+    repeating-linear-gradient(0deg,rgba(14,15,18,.055) 0 1px,transparent 1px 12.5%);
+  -webkit-mask-image:linear-gradient(90deg,#000 0 70%,transparent 100%);
+          mask-image:linear-gradient(90deg,#000 0 70%,transparent 100%);
+}
+.section--ink .window__field{
+  background-image:
+    repeating-linear-gradient(90deg,rgba(252,252,250,.1) 0 1px,transparent 1px 8.3333%),
+    repeating-linear-gradient(0deg,rgba(252,252,250,.1) 0 1px,transparent 1px 12.5%);
+}
+
+/* the measure along the foot of the frame: the search has an extent, and it
+   is a stated one */
+.window__scale{
+  position:absolute;left:0;right:0;bottom:0;height:9px;
+  transform:translateZ(1px);
+  background-image:repeating-linear-gradient(90deg,var(--hair) 0 1px,transparent 1px 4.1666%);
+  -webkit-mask-image:linear-gradient(90deg,#000 0 38%,rgba(0,0,0,.25) 38.2%,rgba(0,0,0,.25) 100%);
+          mask-image:linear-gradient(90deg,#000 0 38%,rgba(0,0,0,.25) 38.2%,rgba(0,0,0,.25) 100%);
+}
+.window.is-live .window__obj{transition:transform .22s var(--ease-depth)}
+
+.window__plane{position:absolute;inset:0;transform-style:preserve-3d}
+
+/* the boundary of the search */
+.window__frame{
+  position:absolute;inset:0;
+  border:1px solid var(--ink);
+  background:none;            /* the frame is a boundary, not a surface —
+                                 an opaque plane here would hide the market
+                                 sitting behind it */
+  transform:translateZ(0);
+  box-shadow:
+    0 1px 1px rgba(14,15,18,.04),
+    calc(var(--sx,0px) * 1) calc(18px + var(--sy,0px)) 46px rgba(14,15,18,.10);
+  transition:box-shadow 1.2s var(--ease-depth);
+}
+.section--ink .window__frame{border-color:rgba(252,252,250,.55);box-shadow:none}
+
+/* the market already in view — grey is allowed here, this is what it means */
+/* Kept on the frame's own plane. Given any depth at all it swings outside
+   the boundary when the object turns — a searched market sticking out past
+   the edge of the search reads as the opposite of what it means. */
+.window__searched{
+  position:absolute;left:0;bottom:0;width:38%;height:44%;
+  background:var(--field);
+  border-top:2px solid var(--ink);
+  border-right:2px solid var(--ink);
+  transform:translateZ(0);
+  overflow:hidden;
+}
+/* the people already inside that market: same squares, grey, because that is
+   what grey means here */
+.window__insiders{position:absolute;inset:0}
+.window__insiders .person{background:var(--grey);opacity:1}
+.section--ink .window__searched{
+  background:rgba(252,252,250,.16);
+  border-color:var(--paper);
+}
+.window__searchedlab{
+  position:absolute;left:0;bottom:0;
+  padding:0 0 14px 14px;
+  transform:translateZ(1px);
+}
+
+/* one person outside the search */
+.window__people{position:absolute;inset:0;transform-style:preserve-3d}
+.person{
+  position:absolute;
+  width:10px;height:10px;
+  background:var(--verm);
+  /* drift + the lean towards a pointer + the plane they stand on + the size
+     a nearby pointer gives them. Written as one transform so nothing fights
+     over it. */
+  transform:
+    translate3d(calc(var(--dx,0px) + var(--mx,0px)),
+                calc(var(--dy,0px) + var(--my,0px)),
+                var(--z,16px))
+    scale(var(--s,1));
+  transition:--s .5s var(--ease-depth),opacity .8s var(--ease);
+  transition-delay:var(--d,0ms);
+  will-change:transform;
+}
+.person--lg{width:14px;height:14px}
+.person--sm{width:7px;height:7px}
+
+/* they arrive one at a time, from nothing, in the order they were counted */
+.window__people .person{opacity:0;--s:0}
+.window__people.is-arrived .person{opacity:1;--s:1}
+
+.window__beyondlab{position:absolute;transform:translateZ(26px)}
+
+/* THE SWEEP
+   One pass of a vermilion hairline, starting at the edge of the searched
+   market and travelling outward across the field. It is the search going
+   further than it has gone before, and it happens once. */
+.window__sweep{
+  position:absolute;top:1px;bottom:1px;left:38%;width:1px;
+  background:var(--verm);opacity:0;transform:translateZ(24px);
+  pointer-events:none;
+}
+.window.is-in .window__sweep{animation:sweep 3.2s var(--ease) .9s 1 both}
+@keyframes sweep{
+  0%{left:var(--sweep-from,38%);opacity:0}
+  10%{opacity:.9}
+  88%{opacity:.35}
+  100%{left:calc(100% - 1px);opacity:0}
+}
+
+.map__sweep{
+  --sweep-from:26%;
+  position:absolute;top:0;bottom:0;left:26%;width:1px;
+  background:var(--verm);opacity:0;transform:translateZ(30px);pointer-events:none;
+}
+.map__plot.is-plotted .map__sweep{animation:sweep 3.6s var(--ease) .2s 1 both}
+
+.window__cap{
+  display:flex;flex-wrap:wrap;gap:6px 22px;
+  margin-top:14px;padding-top:10px;border-top:1px solid var(--hairsoft);
+}
+.window__cap .caption{white-space:nowrap}
+.section--ink .window__cap{border-top-color:var(--hairsoft-rev)}
+
+/* ── 02 · HERO ─────────────────────────────────────────────────────────── */
+
+.hero{
+  position:relative;
+  padding-top:clamp(120px,15vh,190px);
+  padding-bottom:clamp(56px,8vh,96px);
+  min-height:100svh;
+  display:flex;flex-direction:column;justify-content:center;
+}
+.hero__grid{
+  display:grid;gap:clamp(36px,5vw,80px);
+  grid-template-columns:minmax(0,1.02fr) minmax(0,1fr);
+  align-items:center;
+}
+/* The statement scale tops out at 88px in print. On the home page the
+   statement shares the screen with the window, so it is set a step down —
+   the two objects are meant to be read together, not one after the other. */
+.hero__say{max-width:16ch;font-size:clamp(34px,4.9vw,70px)}
+.hero__sub{margin-top:clamp(22px,3vw,34px);max-width:46ch}
+/* Two blocks in the hero and no more: the line, and one sentence that says
+   what the company is. Anything else belongs further down the page. */
+.hero__act{margin-top:clamp(28px,3.4vw,44px)}
+.hero__foot{
+  margin-top:clamp(44px,6vh,86px);padding-top:16px;border-top:1px solid var(--ink);
+  display:flex;flex-wrap:wrap;gap:12px 40px;align-items:baseline;
+}
+
+/* ── 03 · THE COMPARISON ───────────────────────────────────────────────── */
+/* Two fields, one control. The reader moves the boundary of the search and
+   watches the count change. It is the whole argument in one interaction. */
+
+.compare{border:1px solid var(--ink);background:var(--paper)}
+.compare__head,
+.compare__foot{
+  display:flex;flex-wrap:wrap;gap:10px 28px;align-items:center;
+  padding:14px 20px;
+}
+.compare__head{border-bottom:1px solid var(--hairsoft)}
+.compare__foot{border-top:1px solid var(--hairsoft)}
+.compare__plot{position:relative;height:clamp(240px,34vw,380px);overflow:hidden}
+.compare__searched{
+  position:absolute;left:0;bottom:0;
+  background:var(--field);
+  border-top:2px solid var(--ink);border-right:2px solid var(--ink);
+  transition:width var(--t) var(--ease),height var(--t) var(--ease);
+}
+.compare__lab{position:absolute;left:14px;bottom:12px;z-index:3}
+.compare__lab--out{left:auto;right:18px;top:16px;bottom:auto}
+/* A person outside the search is vermilion. The same person, once the search
+   widens far enough to include them, becomes part of the market being
+   searched — and turns grey. Nothing moves; only the meaning changes. */
+.compare__dot{
+  position:absolute;width:9px;height:9px;background:var(--verm);
+  transform:
+    translate3d(calc(var(--dx,0px) + var(--mx,0px)),
+                calc(var(--dy,0px) + var(--my,0px)),0)
+    scale(var(--s,1));
+  transition:background-color var(--t) var(--ease),--s .45s var(--ease-depth);
+}
+.compare__dot[data-in="true"]{background:var(--grey)}
+
+.slider{
+  -webkit-appearance:none;appearance:none;
+  width:100%;max-width:340px;height:44px;background:none;cursor:ew-resize;
+}
+.slider::-webkit-slider-runnable-track{height:1px;background:var(--ink)}
+.slider::-moz-range-track{height:1px;background:var(--ink)}
+.slider::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;
+  width:12px;height:12px;background:var(--verm);border:0;border-radius:0;margin-top:-6px;
+}
+.slider::-moz-range-thumb{width:12px;height:12px;background:var(--verm);border:0;border-radius:0}
+
+/* ── 04 · THE MARKET MAP ───────────────────────────────────────────────── */
+/* Not a geographic map. A counted field: distance from the client's own
+   market on x, depth of experience on y. Filters change the count and the
+   state of the markers. Markers never move, slide, fly or bounce. */
+
+.map{border:1px solid var(--ink);background:var(--paper)}
+.map__head{
+  display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;justify-content:space-between;
+  padding:14px 20px;border-bottom:1px solid var(--hairsoft);
+}
+.map__filters{display:flex;flex-wrap:wrap;gap:8px}
+.filter{
+  font-family:var(--M);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--mid);background:none;border:1px solid var(--hair);border-radius:0;
+  padding:0 14px;min-height:38px;cursor:pointer;
+  transition:color var(--t-fast) var(--ease),border-color var(--t-fast) var(--ease);
+}
+.filter:hover{color:var(--ink);border-color:var(--ink)}
+.filter[aria-pressed="true"],.filter[aria-selected="true"]{
+  color:var(--ink);border-color:var(--ink);
+}
+.filter[aria-pressed="true"]{box-shadow:inset 0 -2px 0 var(--verm)}
+
+.map__plotwrap{position:relative;overflow-x:auto;overscroll-behavior-x:contain;perspective:1400px}
+.map__plot{
+  position:relative;
+  height:clamp(300px,44vw,500px);
+  min-width:680px;
+  transform-style:preserve-3d;
+  /* the counted field is a plane, not a chart: it leans two degrees under
+     the pointer and the markers, which stand on three depth planes, separate
+     as it does */
+  transform:rotateX(var(--prx,0deg)) rotateY(var(--pry,0deg));
+  transition:transform 1.4s var(--ease-depth);
+}
+.map__plot.is-live{transition:transform .3s var(--ease-depth)}
+/* the market the client is already searching */
+.map__searched{
+  position:absolute;left:0;bottom:0;width:26%;height:38%;
+  background:var(--field);
+  border-top:2px solid var(--ink);border-right:2px solid var(--ink);
+}
+.map__searchedlab{position:absolute;left:14px;bottom:12px;z-index:2}
+.map__axis{
+  position:absolute;font-family:var(--M);font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--mid);
+}
+.map__axis--x{right:20px;bottom:12px}
+.map__axis--y{left:14px;top:16px}
+
+.marker{
+  position:absolute;width:9px;height:9px;padding:0;
+  background:var(--verm);border:0;border-radius:0;cursor:pointer;
+  transform:
+    translate3d(calc(var(--dx,0px) + var(--mx,0px)),
+                calc(var(--dy,0px) + var(--my,0px)),
+                var(--mz,0px))
+    scale(var(--s,1));
+  transition:opacity var(--t) var(--ease),--s .45s var(--ease-depth);
+  transition-delay:var(--d,0ms);
+  opacity:0;
+}
+.map__plot.is-plotted .marker{opacity:1}
+.marker[hidden]{display:none}
+/* a marker a filter has excluded stops moving and stops answering — it is
+   still part of the market, it is just not part of the question */
+.map__plot.is-plotted .marker[data-state="out"]{opacity:.14;pointer-events:none;--s:1}
+.marker:hover,.marker:focus-visible{--s:1.9}
+.marker--searched{background:var(--grey)}
+
+.map__read{
+  position:absolute;z-index:6;width:250px;
+  /* in front of every marker's depth plane: the plot is a 3D scene, so
+     paint order here is decided by Z, not by z-index alone */
+  transform:translateZ(70px);
+  background:var(--ink);color:var(--paper);
+  padding:16px 18px;pointer-events:none;
+  opacity:0;
+  transition:opacity var(--t-fast) var(--ease);
+}
+.map__read.is-open{opacity:1;transform:translateZ(70px)}
+.map__read dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin-top:10px}
+.map__read dt{font-family:var(--M);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:rgba(252,252,250,.5)}
+.map__read dd{margin:0;font-size:13px;line-height:1.45}
+.map__read .unknown{color:rgba(252,252,250,.5)}
+.map__foot{
+  display:flex;flex-wrap:wrap;gap:10px 28px;align-items:center;
+  padding:14px 20px;border-top:1px solid var(--hairsoft);
+}
+.map__count{font-family:var(--M);font-weight:500;font-size:22px;font-variant-numeric:tabular-nums}
+
+/* the hatch: a field we have not measured */
+.hatch{
+  background-image:repeating-linear-gradient(45deg,var(--grey) 0 1px,transparent 1px 5px);
+  opacity:.5;
+}
+
+/* ── 05 · THE LEDGER ───────────────────────────────────────────────────── */
+
+.ledger{width:100%;border-collapse:collapse;text-align:left}
+.ledger caption,.jobs caption{display:table-caption;caption-side:top;text-align:left}
+.ledger th{
+  font-family:var(--M);font-weight:400;font-size:11px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--mid);
+  padding:0 24px 12px 0;border-bottom:1px solid var(--ink);vertical-align:bottom;
+}
+.ledger td{
+  padding:18px 24px 18px 0;border-bottom:1px solid var(--hairsoft);
+  vertical-align:top;font-size:16px;line-height:1.5;color:var(--slate);
+}
+.ledger td:last-child,.ledger th:last-child{padding-right:0}
+.ledger td b{font-weight:600;color:var(--ink)}
+.ledger .t{
+  font-family:var(--M);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink);width:30%;
+}
+.ledger .n{font-family:var(--M);font-size:12px;color:var(--verm);width:56px}
+.ledger .q{font-family:var(--M);font-variant-numeric:tabular-nums;color:var(--ink);text-align:right;white-space:nowrap}
+.ledger tr:last-child td{border-bottom:0}
+.ledger--rows td:first-child{color:var(--ink);font-weight:600}
+
+/* figures, set — never animated, never counted up */
+.figs{display:flex;flex-wrap:wrap;gap:28px 56px}
+.fig__n{font-family:var(--M);font-weight:500;font-size:clamp(30px,3.4vw,44px);line-height:1;font-variant-numeric:tabular-nums lining-nums;letter-spacing:-.02em}
+.fig__l{margin-top:10px;max-width:22ch}
+
+/* the concentration, drawn: 29 records, 20 of them one client.
+   Ink and hairline only — this is not a market, so no grey and no vermilion. */
+.tally{display:flex;flex-wrap:wrap;gap:6px;max-width:420px}
+.tally i{width:16px;height:16px;border:1px solid var(--ink);display:block}
+.tally i[data-one="true"]{background:var(--ink)}
+
+/* ── 06 · THE PLATE (photography) ──────────────────────────────────────── */
+/* Always cut by an edge. No border, no radius, no shadow, no filter, never
+   the mark on top of it, never vermilion over it. */
+
+.plate{position:relative;overflow:hidden;background:var(--field)}
+.plate img{width:100%;height:100%;object-fit:cover;display:block}
+/* Full bleed without a transform. A transform here is fragile: any reveal
+   rule that resets transform (and .is-in does) silently drops the plate half
+   a screen to the right. Margins cannot be overridden by the motion layer. */
+.plate--bleed{
+  width:100vw;
+  margin-inline:calc(50% - 50vw);
+  height:clamp(320px,62vh,720px);
+}
+.plate--half{height:clamp(300px,54vh,640px)}
+.plate--col{aspect-ratio:3/2}
+.plate__cap{
+  position:absolute;left:14px;bottom:18px;z-index:3;
+  font-family:var(--M);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(252,252,250,.72);
+  writing-mode:vertical-rl;transform:rotate(180deg);
+}
+.plate__cap--ink{color:var(--mid)}
+.scrim{
+  position:absolute;left:0;top:0;bottom:0;width:72%;
+  background:linear-gradient(94deg,rgba(14,15,18,.88) 0%,rgba(14,15,18,.72) 38%,rgba(14,15,18,0) 100%);
+}
+.plate__type{
+  position:absolute;left:0;bottom:0;z-index:2;
+  padding:clamp(24px,4vw,64px);max-width:min(760px,74%);color:var(--paper);
+}
+.plate__type p{color:rgba(252,252,250,.8)}
+
+/* a photograph that moves a little slower than the page it sits in */
+.plate img[data-parallax]{
+  height:118%;
+  /* one transform, two sources: --py is written either by the scroll-driven
+     animation in motion.css or by the rAF fallback in motion.js, and
+     --pscale is released when the plate is revealed */
+  transform:translate3d(0,var(--py,0px),0) scale(var(--pscale,1.05));
+  will-change:transform;
+}
+
+/* ── 07 · THE SHEET (real documents) ───────────────────────────────────── */
+/* A market map, a proposal, a candidate summary — the objects the client
+   actually receives. They behave like paper: they lift, the shadow deepens,
+   the perspective shifts a few degrees. They do not spin. */
+
+.sheets{
+  display:grid;gap:clamp(20px,2.6vw,40px);
+  grid-template-columns:repeat(3,1fr);
+  perspective:1500px;
+}
+.sheet{
+  position:relative;display:block;text-align:left;
+  background:var(--paper);border:1px solid var(--hair);
+  padding:22px 22px 20px;
+  transform-style:preserve-3d;
+  transform:translateZ(0) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
+  transition:transform .6s var(--ease-depth),box-shadow .6s var(--ease-depth),border-color .4s var(--ease);
+  box-shadow:0 1px 2px rgba(14,15,18,.04);
+  cursor:default;
+}
+.sheet.is-live{transition:transform .2s var(--ease-depth),box-shadow .35s var(--ease-depth)}
+.sheet:hover,.sheet:focus-within{
+  border-color:var(--hair);
+  box-shadow:calc(var(--sx,0px)) calc(16px + var(--sy,0px)) 40px rgba(14,15,18,.14);
+}
+.sheet__body{min-height:150px;margin:18px 0;position:relative;transform:translateZ(12px)}
+.sheet__ln{height:1px;background:var(--hairsoft);margin-bottom:9px}
+.sheet__ln--w70{width:70%}.sheet__ln--w45{width:45%}.sheet__ln--w88{width:88%}
+.sheet__mini{position:relative;height:104px;border:1px solid var(--hairsoft);overflow:hidden}
+.sheet__mini .field{position:absolute;left:0;bottom:0;width:34%;height:42%;background:var(--field);border-top:1px solid var(--ink);border-right:1px solid var(--ink)}
+.sheet__mini .person{
+  position:absolute;width:6px;height:6px;background:var(--verm);opacity:1;
+  transform:translate3d(var(--dx,0px),var(--dy,0px),0) scale(var(--s,1));
+}
+.sheet__foot{display:flex;justify-content:space-between;gap:14px;align-items:baseline;border-top:1px solid var(--hairsoft);padding-top:12px}
+/* the marker on a lifted sheet rises a little off the paper */
+.sheet:hover .sheet__mini .person,
+.sheet:focus-within .sheet__mini .person{
+  transform:translate3d(var(--dx,0px),var(--dy,0px),12px) scale(1.18);
+}
+
+/* ── 08 · TALENT ───────────────────────────────────────────────────────── */
+/* Anonymous first. No name, no photograph, no current employer, no contact
+   detail — on the page or in the markup. If a future build breaks this, it
+   breaks the brand. */
+
+.talent{
+  display:grid;gap:clamp(16px,2vw,28px);
+  grid-template-columns:repeat(3,1fr);
+  perspective:1400px;
+}
+.tcard{
+  display:flex;flex-direction:column;
+  border:1px solid var(--hair);background:var(--paper);
+  padding:24px 24px 20px;
+  transform-style:preserve-3d;
+  transform:translateY(0) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
+  transition:transform .5s var(--ease-depth),box-shadow .5s var(--ease-depth);
+}
+.tcard.is-live{transition:transform .2s var(--ease-depth),box-shadow .3s var(--ease-depth)}
+.tcard:hover,.tcard:focus-within{
+  transform:translateY(-5px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
+  box-shadow:calc(var(--sx,0px)) calc(12px + var(--sy,0px)) 30px rgba(14,15,18,.12);
+}
+.tcard__role{font-weight:600;font-size:20px;letter-spacing:-.02em;line-height:1.15;margin-top:14px}
+.tcard__meta{
+  font-family:var(--M);font-size:13px;line-height:2;color:var(--slate);margin-top:14px;
+  font-variant-numeric:tabular-nums;
+}
+.tcard__foot{margin-top:auto;padding-top:22px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.avail{display:inline-flex;align-items:center;gap:9px;font-size:14px;color:var(--ink)}
+.avail::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--confirmed);flex:none}
+.tcard[hidden]{display:none}
+
+.count{font-family:var(--M);font-weight:500;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink)}
+.empty{padding:40px 0;border-top:1px solid var(--hairsoft)}
+
+/* ── 09 · STEPS ────────────────────────────────────────────────────────── */
+
+.steps{display:grid;gap:clamp(24px,3vw,48px);grid-template-columns:repeat(3,1fr);counter-reset:s}
+.steps--4{grid-template-columns:repeat(4,1fr)}
+.step{padding-top:16px;border-top:1px solid var(--ink)}
+.step__n{font-family:var(--M);font-size:11px;letter-spacing:.2em;color:var(--verm)}
+.step__h{font-weight:600;font-size:clamp(20px,1.7vw,25px);letter-spacing:-.025em;margin-top:14px}
+.step p{margin-top:12px;font-size:16px}
+
+/* ── 10 · JOBS ─────────────────────────────────────────────────────────── */
+
+.jobs{width:100%;border-collapse:collapse;text-align:left}
+.jobs th{
+  font-family:var(--M);font-weight:400;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--mid);padding:0 32px 14px 0;border-bottom:1px solid var(--ink);
+}
+.jobs td{padding:30px 32px 30px 0;border-bottom:1px solid var(--hairsoft);vertical-align:top;font-size:15px;line-height:1.55;color:var(--slate)}
+.jobs td:last-child,.jobs th:last-child{padding-right:0}
+.jobs .role{font-family:var(--A);font-weight:600;font-size:19px;letter-spacing:-.022em;color:var(--ink);line-height:1.2}
+.jobs .pay{font-family:var(--M);font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap}
+.jobs tbody tr{transition:background-color var(--t-fast) var(--ease)}
+
+.jobs tr[hidden]{display:none}
+
+/* ── 11 · FORMS ────────────────────────────────────────────────────────── */
+
+.form{max-width:640px}
+.field{margin-bottom:30px}
+.field > label{display:block;margin-bottom:10px}
+.field input,.field select,.field textarea{
+  width:100%;background:none;border:0;border-bottom:1px solid var(--hair);border-radius:0;
+  padding:12px 0;min-height:48px;font-size:17px;color:var(--ink);
+  transition:border-color var(--t-fast) var(--ease);
+}
+.field textarea{min-height:110px;resize:vertical;line-height:1.5}
+.field select{-webkit-appearance:none;appearance:none;cursor:pointer;
+  background-image:linear-gradient(45deg,transparent 50%,var(--ink) 50%),linear-gradient(135deg,var(--ink) 50%,transparent 50%);
+  background-position:calc(100% - 11px) 22px,calc(100% - 5px) 22px;
+  background-size:6px 6px,6px 6px;background-repeat:no-repeat;
+}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-bottom-color:var(--ink);border-bottom-width:2px}
+.field input::placeholder,.field textarea::placeholder{color:var(--mid)}
+.field__help{margin-top:8px;font-size:14px;color:var(--mid)}
+.field__err{
+  display:none;margin-top:8px;
+  font-family:var(--M);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--error);
+}
+.field[data-invalid="true"] input,.field[data-invalid="true"] select{border-bottom-color:var(--error);border-bottom-width:2px}
+.field[data-invalid="true"] .field__err{display:block}
+
+.choice{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;position:relative}
+/* The input is hidden but still focusable; pointer-events are off so an
+   absolutely positioned, invisible control can never swallow a click meant
+   for something else on the page. */
+.choice input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none;clip-path:inset(50%)}
+.choice label{
+  display:inline-flex;align-items:center;min-height:48px;padding:0 20px;
+  border:1px solid var(--hair);cursor:pointer;font-size:16px;
+  transition:border-color var(--t-fast) var(--ease),background-color var(--t-fast) var(--ease),color var(--t-fast) var(--ease);
+}
+.choice input:checked + label{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.choice input:focus-visible + label{outline:2px solid var(--ink);outline-offset:3px}
+
+.form__status{
+  margin-top:26px;padding:20px 22px;border:1px solid var(--ink);
+  display:none;
+}
+.form__status.is-on{display:block}
+.form__status[data-kind="error"]{border-color:var(--error);color:var(--error)}
+
+/* ── 12 · DIALOG ───────────────────────────────────────────────────────── */
+
+.dialog{
+  border:0;padding:0;max-width:min(560px,92vw);width:100%;
+  background:var(--paper);color:var(--ink);
+}
+.dialog::backdrop{background:rgba(14,15,18,.5)}
+.dialog__in{border:1px solid var(--ink);padding:clamp(24px,3.4vw,44px)}
+.dialog__close{
+  position:absolute;top:14px;right:14px;min-height:44px;min-width:44px;
+  background:none;border:0;cursor:pointer;
+  font-family:var(--M);font-size:11px;letter-spacing:.18em;color:var(--mid);
+}
+.dialog__close:hover{color:var(--ink)}
+
+/* ── 13 · QUIET STATEMENT ──────────────────────────────────────────────── */
+
+.promise{
+  min-height:72svh;display:flex;flex-direction:column;justify-content:center;
+}
+.promise .say{max-width:17ch}
+.promise__foot{margin-top:clamp(40px,7vh,88px);padding-top:16px;border-top:1px solid rgba(252,252,250,.55);display:flex;flex-wrap:wrap;gap:14px 44px}
+
+/* ── 14 · PAGE HEAD ────────────────────────────────────────────────────── */
+
+.phead{padding-top:clamp(140px,17vh,220px);padding-bottom:clamp(40px,6vh,72px)}
+.phead .say{max-width:19ch}
+.phead__sub{margin-top:24px;max-width:52ch}
+.phead__meta{margin-top:clamp(34px,5vh,60px);padding-top:14px;border-top:1px solid var(--ink);display:flex;flex-wrap:wrap;gap:10px 40px}
+
+/* ── 15 · THE ATTACHMENT ───────────────────────────────────────────────── */
+/* A CV is a document, so it is treated like one: a hairline plate you can
+   drop a file onto, which then shows the file as a stated fact — name, size,
+   type — the way every other counted thing on this site is stated.
+   Radius 0, no fill, no icon set, no progress theatre. */
+
+.drop{
+  position:relative;
+  display:flex;flex-direction:column;justify-content:center;gap:8px;
+  min-height:104px;padding:20px 22px;
+  border:1px solid var(--hair);
+  background:none;
+  transition:border-color var(--t-fast) var(--ease),background-color var(--t-fast) var(--ease);
+}
+.drop input[type="file"]{
+  position:absolute;inset:0;width:100%;height:100%;
+  opacity:0;cursor:pointer;
+}
+.drop__msg{font-size:16px;color:var(--slate)}
+.drop__msg b{font-weight:600;color:var(--ink);border-bottom:1px solid var(--verm)}
+.drop__meta{font-family:var(--M);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mid)}
+.drop:hover,.drop:focus-within{border-color:var(--ink)}
+.drop[data-over="true"]{border-color:var(--verm);background:rgba(211,58,26,.03)}
+
+/* the file, once it is there: a record, not a chip */
+.drop[data-has="true"]{border-color:var(--ink)}
+.drop__file{display:none;gap:14px;align-items:baseline}
+.drop[data-has="true"] .drop__file{display:flex;flex-wrap:wrap}
+.drop[data-has="true"] .drop__msg{display:none}
+.drop__name{font-weight:600;font-size:16px;color:var(--ink);word-break:break-all}
+.drop__size{font-family:var(--M);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mid)}
+.drop__clear{
+  position:relative;z-index:2;margin-left:auto;
+  background:none;border:0;padding:6px 0;min-height:44px;cursor:pointer;
+  font-family:var(--M);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mid);
+  border-bottom:1px solid transparent;
+}
+.drop__clear:hover{color:var(--ink);border-bottom-color:var(--ink)}
+.field[data-invalid="true"] .drop{border-color:var(--error)}
+
+/* the sheet-lift, borrowed: a dropped document behaves like the documents on
+   the rest of the site */
+.drop[data-has="true"]{box-shadow:0 10px 26px rgba(14,15,18,.08)}
+
+/* ── 16 · DEPTH AND MOTION, CONTINUED ──────────────────────────────────── */
+
+/* Cards and sheets are objects with thickness: the type sits above the
+   paper, so when the card tilts the label and the role move across it. */
+.tcard > .label{transform:translateZ(6px)}
+.tcard__role{transform:translateZ(20px)}
+.tcard__meta{transform:translateZ(12px)}
+.tcard__foot{transform:translateZ(16px)}
+.sheet > .label{transform:translateZ(6px)}
+.sheet .hd--s{transform:translateZ(18px)}
+.sheet__foot{transform:translateZ(8px)}
+
+/* A row in the ledger does not move, shift, tint or grow under the pointer.
+   The only thing that changes is the rule beneath it, from a hairline to
+   ink — the way a finger under a line in a printed table works. Nothing is
+   ever pushed around the words. */
+.jobs tbody tr td{transition:border-color var(--t-fast) var(--ease)}
+.jobs tbody tr:hover td,.jobs tbody tr:focus-within td{border-bottom-color:var(--ink)}
+.ledger tbody tr{transition:transform var(--t-fast) var(--ease-depth)}
+.ledger tbody tr:hover{transform:translateX(3px)}
+
+/* The section rule draws itself, left to right, when the section arrives. */
+.shead{position:relative}
+.shead::after{
+  content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
+  background:var(--verm);transform:scaleX(0);transform-origin:0 50%;
+  transition:transform 1.4s var(--ease);
+}
+.shead.is-in::after{transform:scaleX(1)}
+
+/* A photograph settles as it is revealed — a slow release of scale, cut by
+   the trim, composed with the parallax that carries it up the page. */
+.plate--bleed img,.plate--half img{
+  transform:translate3d(0,var(--py,0px),0) scale(var(--pscale,1.05));
+  transition:transform 2.2s var(--ease-depth);
+}
+.plate.is-in img{--pscale:1}
+
+/* The primary action fills from the left rather than flicking to black. */
+.btn{position:relative;overflow:hidden;isolation:isolate;z-index:0}
+.btn::before{
+  content:"";position:absolute;inset:0;z-index:-1;background:var(--ink);
+  transform:scaleX(0);transform-origin:0 50%;
+  transition:transform .48s var(--ease-depth);
+}
+.btn:hover::before,.btn:focus-visible::before{transform:scaleX(1)}
+.btn:hover,.btn:focus-visible{background:none;color:var(--paper)}
+.btn--rev::before{background:var(--paper)}
+.btn--rev:hover,.btn--rev:focus-visible{color:var(--ink)}
+.btn[disabled]::before{transform:scaleX(0)}

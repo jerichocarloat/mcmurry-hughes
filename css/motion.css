@@ -1,0 +1,203 @@
+/* =========================================================================
+   McMURRY & HUGHES — motion.css
+   The advanced layer. Everything here is native browser technology doing
+   work that used to need a library and a main-thread scroll listener:
+
+     1  CROSS-DOCUMENT VIEW TRANSITIONS — the site navigates like one
+        application. The mark and the navigation hold their position while
+        the page underneath them changes.
+     2  SCROLL-DRIVEN ANIMATIONS — animation-timeline: view() / scroll().
+        These run off the main thread. No scroll listener, no rAF, no jank,
+        and they cannot fall out of sync with the scroll position the way a
+        JavaScript parallax always eventually does.
+     3  ANIMATED CUSTOM PROPERTIES — registered with @property, so a scroll
+        timeline can drive a rotation that COMPOSES with the pointer's
+        rotation instead of overwriting it. This is the piece that makes the
+        hero window answer the scroll and the pointer at the same time.
+
+   Every block is feature-detected. Where the browser does not support it,
+   the JavaScript in motion.js does the same job, and where neither is
+   available the page is simply static and completely usable.
+   Nothing in this file runs under prefers-reduced-motion.
+   ========================================================================= */
+
+/* ── registered properties: the ones a timeline animates ───────────────── */
+
+@property --srx { syntax: '<angle>';  inherits: false; initial-value: 0deg }
+@property --sry { syntax: '<angle>';  inherits: false; initial-value: 0deg }
+@property --sty { syntax: '<length>'; inherits: false; initial-value: 0px }
+@property --pscale { syntax: '<number>'; inherits: false; initial-value: 1 }
+@property --py  { syntax: '<length>'; inherits: false; initial-value: 0px }
+
+/* ══ 1 · VIEW TRANSITIONS ═══════════════════════════════════════════════ */
+/* The whole site is one document as far as the reader is concerned: the
+   mark and the navigation are continuous, and only the argument changes. */
+
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto }
+
+  ::view-transition-group(root) { animation-duration: .5s }
+  ::view-transition-old(root) {
+    animation: vt-out .32s cubic-bezier(.4,0,1,1) both;
+  }
+  ::view-transition-new(root) {
+    animation: vt-in .52s cubic-bezier(.22,.61,.36,1) both;
+  }
+  @keyframes vt-out { to { opacity: 0; transform: translateY(-8px) } }
+  @keyframes vt-in { from { opacity: 0; transform: translateY(16px) } }
+
+  /* these do not cross-fade — they stay put and the page moves around them */
+  .nav      { view-transition-name: mh-nav }
+  .nav .mark{ view-transition-name: mh-mark }
+  .rail     { view-transition-name: mh-rail }
+  .foot     { view-transition-name: mh-foot }
+
+  ::view-transition-group(mh-nav),
+  ::view-transition-group(mh-mark),
+  ::view-transition-group(mh-rail),
+  ::view-transition-group(mh-foot) { animation-duration: .45s }
+  ::view-transition-old(mh-nav),  ::view-transition-new(mh-nav),
+  ::view-transition-old(mh-mark), ::view-transition-new(mh-mark),
+  ::view-transition-old(mh-rail), ::view-transition-new(mh-rail),
+  ::view-transition-old(mh-foot), ::view-transition-new(mh-foot) {
+    animation: none; mix-blend-mode: normal;
+  }
+}
+
+/* ══ 2 · SCROLL-DRIVEN ══════════════════════════════════════════════════ */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+
+    /* THE RAIL fills with the document's own progress. A scroll timeline on
+       the root: the browser drives it, this file never measures anything. */
+    .rail__line { position: absolute }
+    .rail__line::after {
+      content: ""; position: absolute; inset: 0; background: var(--verm);
+      transform-origin: 50% 0; transform: scaleY(0);
+      animation: rail-fill linear both;
+      animation-timeline: scroll(root block);
+    }
+    @keyframes rail-fill { to { transform: scaleY(1) } }
+
+    /* THE WINDOW keeps turning as the page leaves it. The timeline animates
+       registered custom properties, not `transform`, so the pointer's
+       rotation and the idle breath keep working underneath it. */
+    .window__obj {
+      animation: window-exit linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+    @keyframes window-exit {
+      to { --srx: 6deg; --sry: -3.6deg; --sty: -30px }
+    }
+
+    /* PHOTOGRAPHY moves slower than the page it is cut into, and releases
+       its scale as it arrives. Off the main thread, so it cannot judder. */
+    .plate img[data-parallax] {
+      height: 118%;
+      animation: plate-drift linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+    @keyframes plate-drift {
+      from { --py: -34px } to { --py: 34px }
+    }
+
+    /* THE STEPS are marked off as you pass them: a vermilion hairline fills
+       the rule above each one, in sequence, driven by the scroll itself. */
+    .step { position: relative }
+    .step::before {
+      /* a third of the rule, not the whole rule: a measure mark, not a
+         coloured band. Vermilion is rationed on this site. */
+      content: ""; position: absolute; top: -1px; left: 0; height: 1px;
+      width: 32%; background: var(--verm); transform: scaleX(0);
+      transform-origin: 0 50%;
+      animation: step-mark linear both;
+      animation-timeline: view();
+      animation-range: entry 45% cover 42%;
+    }
+    @keyframes step-mark { to { transform: scaleX(1) } }
+
+    /* THE LEDGER reads down: each row's hairline draws as it arrives. */
+    .ledger tbody tr td { position: relative }
+    .ledger tbody tr td::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+      background: var(--ink); opacity: .18; transform: scaleX(0); transform-origin: 0 50%;
+      animation: step-mark linear both;
+      animation-timeline: view();
+      animation-range: entry 60% cover 25%;
+    }
+
+    /* THE SECTION HEAD rule draws with the scroll rather than on a trigger,
+       so it is exactly as far along as the reader is. */
+    .shead::after {
+      animation: step-mark linear both;
+      animation-timeline: view();
+      animation-range: entry 70% cover 30%;
+      transition: none;
+    }
+
+    /* THE FIGURES settle: the counted numbers rise the last few pixels as
+       the evidence comes into view, and stop. They never count up. */
+    .figs > * {
+      animation: fig-settle linear both;
+      animation-timeline: view();
+      animation-range: entry 20% entry 90%;
+    }
+    @keyframes fig-settle {
+      from { opacity: .15; transform: translateY(14px) }
+      to   { opacity: 1;   transform: none }
+    }
+
+    /* THE TALLY: twenty-nine squares, drawn left to right as the record
+       arrives — the concentration builds in front of the reader. */
+    .tally i {
+      animation: tally-in linear both;
+      animation-timeline: view();
+      animation-range: entry 25% cover 20%;
+    }
+    @keyframes tally-in { from { opacity: 0 } to { opacity: 1 } }
+  }
+}
+
+/* Where scroll-driven animation is not supported, motion.js does the
+   parallax and the window's scroll rotation with a single rAF-throttled
+   listener. The flag below is what it reads. */
+@supports not (animation-timeline: view()) {
+  :root { --js-scroll: 1 }
+}
+
+/* ══ 3 · THE REACH ══════════════════════════════════════════════════════ */
+/* Hovering a person on the map draws the line between the market the client
+   searches and where that person actually is. It is the distance the desk
+   covers, drawn at the moment someone asks about one person. */
+
+.map__reach {
+  position: absolute; inset: 0; pointer-events: none; z-index: 4;
+  opacity: 0; transition: opacity .3s var(--ease);
+}
+.map__reach.is-on { opacity: 1 }
+.map__reach line {
+  stroke: var(--verm); stroke-width: 1; vector-effect: non-scaling-stroke;
+  stroke-dasharray: var(--len, 400); stroke-dashoffset: var(--len, 400);
+  transition: stroke-dashoffset .55s var(--ease-depth);
+}
+.map__reach.is-on line { stroke-dashoffset: 0 }
+.map__reach text {
+  font-family: var(--M); font-size: 10px; letter-spacing: .16em;
+  text-transform: uppercase; fill: var(--verm);
+}
+
+/* ══ 4 · THE MAGNETIC ACTION ════════════════════════════════════════════ */
+/* The primary action leans towards the pointer before it is clicked — six
+   pixels, and only the action that leads to the market. */
+
+.btn--primary { transition: transform .4s var(--ease-depth), color var(--t-fast) var(--ease) }
+.btn--primary.is-pulled { transition: transform .12s linear }
+.btn--primary { transform: translate3d(var(--bx,0px), var(--by,0px), 0) }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn--primary { transform: none !important }
+  .map__reach { display: none }
+}

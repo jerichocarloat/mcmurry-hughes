@@ -1,0 +1,158 @@
+/* =========================================================================
+   McMURRY & HUGHES — responsive.css
+   Mobile is designed, not shrunk. The rules below are the ones written into
+   the brand book's mobile page:
+     · one column below 768px
+     · the hero statement drops to ~36px; mono labels DO NOT scale, because
+       they are furniture rather than hierarchy
+     · the map scrolls sideways on touch — no pinch-zoom, no clustering,
+       no "tap to expand"
+     · 44px minimum target, hairline rule, no fill, radius 0
+     · no hamburger that hides six items and then reveals nine
+   Breakpoints checked: 1440 · 1280 · 1024 · 768 · 430 · 390.
+   ========================================================================= */
+
+/* ── 1440 and below: the rail loses its generous margin ────────────────── */
+@media (max-width:1440px){
+  .wrap{max-width:1360px}
+}
+
+/* ── 1280 ──────────────────────────────────────────────────────────────── */
+@media (max-width:1280px){
+  :root{--rail:60px}
+  .wrap{padding-right:40px}
+  .foot__grid{grid-template-columns:minmax(0,1.2fr) repeat(3,minmax(0,1fr));gap:32px}
+  .sheets{gap:20px}
+}
+
+/* ── 1024: the rail is withdrawn, three columns become two ───────────────
+   Written as 1023 so it can never overlap the min-width:1024 rule that
+   reserves the rail's column — at exactly 1024px both would apply and the
+   rail would sit on top of the text. */
+@media (max-width:1023px){
+  :root{--gutter:22px}
+  .wrap{padding-left:var(--gutter);padding-right:var(--gutter)}
+  .hero__grid{grid-template-columns:1fr;gap:44px}
+  .hero{min-height:auto;padding-top:132px}
+  .hero__say{max-width:18ch}
+  .cols--2,.cols--lead,.cols--aside{grid-template-columns:1fr}
+  .cols--3{grid-template-columns:repeat(2,1fr)}
+  .cols--4,.cols--5{grid-template-columns:repeat(2,1fr)}
+  .talent{grid-template-columns:repeat(2,1fr)}
+  .sheets{grid-template-columns:1fr}
+  .steps,.steps--4{grid-template-columns:repeat(2,1fr)}
+  .plate--bleed{height:clamp(280px,46vh,480px)}
+}
+
+/* ── 768: one column, and the navigation changes shape ─────────────────── */
+@media (max-width:768px){
+  :root{--band:clamp(56px,11vw,92px)}
+
+  .nav__toggle{display:inline-flex;align-items:center}
+  /* the mark and the Close control stay above the panel, so neither vanishes
+     while the panel is open */
+  .nav .mark,.nav__toggle{position:relative;z-index:80}
+  .nav__panel{
+    display:block;position:fixed;inset:0;z-index:70;
+    background:var(--paper);
+    padding:96px var(--gutter) 40px;
+    transform:translateY(-100%);
+    transition:transform .5s var(--ease);
+    visibility:hidden;
+  }
+  .nav[data-open="true"] .nav__panel{transform:none;visibility:visible}
+  .nav[data-open="true"]{background:var(--paper);border-bottom-color:transparent}
+  .nav__links{flex-direction:column;align-items:flex-start;gap:0}
+  .nav__links li{width:100%}
+  .nav__link{
+    display:block;font-size:13px;letter-spacing:.18em;width:100%;
+    padding:20px 0;border-bottom:1px solid var(--hairsoft);
+  }
+  .nav__link[aria-current="page"]{border-bottom-color:var(--verm)}
+
+  .say--xl{font-size:36px}
+  .say--l{font-size:32px}
+  .say--m{font-size:27px}
+  .say--s{font-size:22px}
+  .standfirst{font-size:17px}
+  body{font-size:16px}
+  /* labels, counts and captions hold their size — they are furniture */
+  .label,.caption,.filter,.nav__link,.flag,.foot__note span{font-size:11px}
+
+  .cols--3,.cols--4,.cols--5,.talent,.steps,.steps--4{grid-template-columns:1fr}
+  .figs{gap:24px 40px}
+  .fig__n{font-size:30px}
+
+  .shead{margin-bottom:30px;gap:14px;flex-wrap:wrap}
+  .shead__r{margin-left:0;width:100%;text-align:left}
+
+  .foot__grid{grid-template-columns:1fr;gap:34px}
+  .foot__note{gap:10px 20px}
+
+  /* the map keeps its size and scrolls sideways; it is not simplified away */
+  .map__plot{min-width:760px;height:340px}
+  .map__read{width:min(250px,72vw)}
+  .compare__plot{height:260px}
+
+  .ledger td,.ledger th{font-size:15px}
+  .ledger .t{width:38%}
+
+  /* jobs: the table becomes a stack of records, still a ledger, not cards */
+  .jobs thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+  .jobs tr{display:block;border-bottom:1px solid var(--hairsoft);padding:22px 0}
+  .jobs tbody tr:hover{background:none}
+  .jobs td{display:grid;grid-template-columns:104px 1fr;gap:16px;border:0;padding:0 0 10px}
+  .jobs td::before{
+    content:attr(data-l);
+    font-family:var(--M);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mid);
+  }
+  .jobs td:last-child{padding-bottom:0}
+
+  .plate--bleed{height:58vh;min-height:320px}
+  .plate__type{max-width:100%;padding:24px}
+  .scrim{width:100%;background:linear-gradient(0deg,rgba(14,15,18,.9) 0%,rgba(14,15,18,.5) 52%,rgba(14,15,18,.12) 100%)}
+
+  .promise{min-height:auto}
+}
+
+/* ── 430 / 390: small phones ───────────────────────────────────────────── */
+@media (max-width:430px){
+  :root{--gutter:18px}
+  .say--xl{font-size:34px}
+  .hero__foot{gap:10px 24px}
+  .btnrow{display:grid;grid-template-columns:1fr;gap:12px}
+  .btn{width:100%}
+  .tally i{width:14px;height:14px}
+  .window__searchedlab{padding-left:10px}
+}
+@media (max-width:390px){
+  .say--xl{font-size:31px}
+  .map__plot{min-width:720px}
+}
+
+/* ── pointer: coarse — depth interactions are removed, not faked ───────── */
+@media (hover:none){
+  .window__obj{transform:none !important}
+  .sheet,.tcard{transform:none !important}
+  .sheet:hover,.tcard:hover{box-shadow:0 1px 2px rgba(14,15,18,.05)}
+  .plate img[data-parallax]{height:100%;transform:none !important}
+}
+
+/* ── print: the site is a document too ─────────────────────────────────── */
+@media print{
+  .nav,.rail,.map__filters,.btn,.act,.dialog{display:none !important}
+  body{background:#fff;font-size:11pt}
+  .section{padding-block:18pt}
+  .plate{break-inside:avoid}
+  a[href^="http"]::after{content:" (" attr(href) ")";font-family:var(--M);font-size:8pt;color:#666}
+}
+
+/* ── the rail and a full-bleed plate share the left edge ───────────────── */
+/* The plate runs to the trim, so its rotated caption has to start inside the
+   rail's column or the two sit on top of each other. */
+@media (min-width:1024px){
+  .plate--bleed .plate__cap{left:calc(var(--rail) + 10px)}
+  /* and the type on it starts where the page's own measure starts, so a
+     full-bleed plate reads as part of the column and not as a poster */
+  .plate--bleed .plate__type{padding-left:calc(var(--rail) + 56px)}
+}
