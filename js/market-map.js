@@ -171,9 +171,27 @@ export class MarketMap {
         this.plot.classList.add('is-plotted');
         io.disconnect();
         setTimeout(() => this.markers.forEach((m) => m.style.setProperty('--d', '0ms')), 1800);
+        this.nudge();
       });
     }, { threshold: 0.15 });
     io.observe(this.plot);
+  }
+
+  /* On a screen narrower than the plot, carry the view across the boundary
+     once, slowly, so the first thing a phone shows is not the searched
+     market alone. It happens one time, it can be interrupted by a touch,
+     and it does not happen at all for someone who asked for less motion. */
+  nudge() {
+    const wrap = this.plot.closest('.map__plotwrap');
+    if (!wrap) return;
+    const over = wrap.scrollWidth - wrap.clientWidth;
+    if (over < 40 || wrap.scrollLeft > 4) return;
+    wrap.classList.add('is-scrollable');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const to = Math.min(over * 0.42, 260);
+    setTimeout(() => {
+      wrap.scrollTo({ left: to, behavior: reduced ? 'auto' : 'smooth' });
+    }, reduced ? 0 : 1400);
   }
 
   bind() {

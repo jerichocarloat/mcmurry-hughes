@@ -272,7 +272,10 @@ async function pages() {
         ?.addEventListener('pointerenter', () => plot.classList.add('is-live'));
       mapRoot.querySelector('.map__plotwrap')
         ?.addEventListener('pointerleave', () => plot.classList.remove('is-live'));
-      drift('.map__plot .marker', { amp: 2.4, root: mapRoot });
+      /* the whole counted field is alive: the people outside the search and
+         the people inside it, at the same rate, because they are the same
+         kind of thing seen from two sides */
+      drift('.map__plot .marker', { amp: 5.5, root: mapRoot, period: 6500 });
       magnet(plot, '.marker', { radius: 150, lift: 0.7, pull: 6 });
       reach(plot);
     }
@@ -280,7 +283,7 @@ async function pages() {
     if (compareRoot) {
       m.comparison(compareRoot);
       const plot = compareRoot.querySelector('.compare__plot');
-      drift('.compare__dot', { amp: 2.8, root: compareRoot });
+      drift('.compare__dot', { amp: 6, root: compareRoot, period: 6000 });
       magnet(plot, '.compare__dot', { radius: 150, lift: 0.6, pull: 5 });
     }
   }
@@ -343,9 +346,9 @@ function boot() {
     arrive(win.querySelector('.window__people'), { step: 130, start: 900, max: 1100 });
     magnet(win, '.person', { radius: 210, lift: 0.95, pull: 9 });
   }
-  drift('.window__people .person', { amp: 3.4 });
-  drift('.window__insiders .person', { amp: 1.6 });
-  drift('.sheet__mini .person', { amp: 1.8 });
+  drift('.window__people .person', { amp: 7.5, period: 5600 });
+  drift('.window__insiders .person', { amp: 5, period: 6400 });
+  drift('.sheet__mini .person', { amp: 3, period: 7000 });
 
   depthAll('.sheet', { max: 3.4, shadow: 12 });
   depthAll('.tcard', { max: 2.4, shadow: 9 });

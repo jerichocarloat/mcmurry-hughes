@@ -278,6 +278,10 @@
 .filter[aria-pressed="true"]{box-shadow:inset 0 -2px 0 var(--verm)}
 
 .map__plotwrap{position:relative;overflow-x:auto;overscroll-behavior-x:contain;perspective:1400px}
+/* said only where it is true: the wrapper adds this class itself when the
+   plot is wider than the screen */
+.map__hint{display:none}
+.map__plotwrap.is-scrollable ~ .map__foot .map__hint{display:inline}
 .map__plot{
   position:relative;
   height:clamp(300px,44vw,500px);
@@ -409,9 +413,32 @@
   writing-mode:vertical-rl;transform:rotate(180deg);
 }
 .plate__cap--ink{color:var(--mid)}
+/* THE SCRIM
+   It covers the whole plate and reaches zero exactly at the far edge. The
+   old rule was 72% wide and tilted 94deg: the tilt meant the gradient hit
+   transparency before the element ended, so the element's own edge showed as
+   a hard vertical seam across the photograph. An overlay that stops inside
+   the frame will always leave a line.
+   The ramp below is eased rather than linear, in eight stops, which is also
+   what keeps an 8-bit gradient from banding across a large image. */
 .scrim{
-  position:absolute;left:0;top:0;bottom:0;width:72%;
-  background:linear-gradient(94deg,rgba(14,15,18,.88) 0%,rgba(14,15,18,.72) 38%,rgba(14,15,18,0) 100%);
+  position:absolute;inset:0;
+  background:
+    linear-gradient(90deg,
+      rgba(14,15,18,.90) 0%,
+      rgba(14,15,18,.87) 14%,
+      rgba(14,15,18,.79) 26%,
+      rgba(14,15,18,.66) 38%,
+      rgba(14,15,18,.49) 50%,
+      rgba(14,15,18,.31) 63%,
+      rgba(14,15,18,.16) 76%,
+      rgba(14,15,18,.06) 88%,
+      rgba(14,15,18,0)   100%),
+    linear-gradient(0deg,
+      rgba(14,15,18,.34) 0%,
+      rgba(14,15,18,.16) 26%,
+      rgba(14,15,18,.04) 52%,
+      rgba(14,15,18,0)   72%);
 }
 .plate__type{
   position:absolute;left:0;bottom:0;z-index:2;
@@ -422,10 +449,9 @@
 /* a photograph that moves a little slower than the page it sits in */
 .plate img[data-parallax]{
   height:118%;
-  /* one transform, two sources: --py is written either by the scroll-driven
-     animation in motion.css or by the rAF fallback in motion.js, and
-     --pscale is released when the plate is revealed */
-  transform:translate3d(0,var(--py,0px),0) scale(var(--pscale,1.05));
+  /* one transform, one source: --py is written either by the scroll-driven
+     animation in motion.css or by the rAF fallback in motion.js */
+  transform:translate3d(0,var(--py,0px),0);
   will-change:transform;
 }
 
@@ -668,8 +694,6 @@
    ever pushed around the words. */
 .jobs tbody tr td{transition:border-color var(--t-fast) var(--ease)}
 .jobs tbody tr:hover td,.jobs tbody tr:focus-within td{border-bottom-color:var(--ink)}
-.ledger tbody tr{transition:transform var(--t-fast) var(--ease-depth)}
-.ledger tbody tr:hover{transform:translateX(3px)}
 
 /* The section rule draws itself, left to right, when the section arrives. */
 .shead{position:relative}
@@ -680,13 +704,12 @@
 }
 .shead.is-in::after{transform:scaleX(1)}
 
-/* A photograph settles as it is revealed — a slow release of scale, cut by
-   the trim, composed with the parallax that carries it up the page. */
+/* A photograph moves, and only moves: the parallax carries it against the
+   page and nothing scales it. Two motions on one documentary picture is one
+   too many. */
 .plate--bleed img,.plate--half img{
-  transform:translate3d(0,var(--py,0px),0) scale(var(--pscale,1.05));
-  transition:transform 2.2s var(--ease-depth);
+  transform:translate3d(0,var(--py,0px),0);
 }
-.plate.is-in img{--pscale:1}
 
 /* The primary action fills from the left rather than flicking to black. */
 .btn{position:relative;overflow:hidden;isolation:isolate;z-index:0}

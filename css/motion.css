@@ -26,7 +26,6 @@
 @property --srx { syntax: '<angle>';  inherits: false; initial-value: 0deg }
 @property --sry { syntax: '<angle>';  inherits: false; initial-value: 0deg }
 @property --sty { syntax: '<length>'; inherits: false; initial-value: 0px }
-@property --pscale { syntax: '<number>'; inherits: false; initial-value: 1 }
 @property --py  { syntax: '<length>'; inherits: false; initial-value: 0px }
 
 /* ══ 1 · VIEW TRANSITIONS ═══════════════════════════════════════════════ */
@@ -119,16 +118,6 @@
     }
     @keyframes step-mark { to { transform: scaleX(1) } }
 
-    /* THE LEDGER reads down: each row's hairline draws as it arrives. */
-    .ledger tbody tr td { position: relative }
-    .ledger tbody tr td::after {
-      content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
-      background: var(--ink); opacity: .18; transform: scaleX(0); transform-origin: 0 50%;
-      animation: step-mark linear both;
-      animation-timeline: view();
-      animation-range: entry 60% cover 25%;
-    }
-
     /* THE SECTION HEAD rule draws with the scroll rather than on a trigger,
        so it is exactly as far along as the reader is. */
     .shead::after {
@@ -136,18 +125,6 @@
       animation-timeline: view();
       animation-range: entry 70% cover 30%;
       transition: none;
-    }
-
-    /* THE FIGURES settle: the counted numbers rise the last few pixels as
-       the evidence comes into view, and stop. They never count up. */
-    .figs > * {
-      animation: fig-settle linear both;
-      animation-timeline: view();
-      animation-range: entry 20% entry 90%;
-    }
-    @keyframes fig-settle {
-      from { opacity: .15; transform: translateY(14px) }
-      to   { opacity: 1;   transform: none }
     }
 
     /* THE TALLY: twenty-nine squares, drawn left to right as the record
@@ -200,4 +177,23 @@
 @media (prefers-reduced-motion: reduce) {
   .btn--primary { transform: none !important }
   .map__reach { display: none }
+}
+
+/* ══ 5 · THE DESK DOES NOT STOP ═════════════════════════════════════════ */
+/* One faint pass of the search across the full map, every twenty seconds.
+   A third of the strength of the opening sweep: enough to register at the
+   edge of attention, never enough to read as a loading animation. Only on
+   the page whose subject is the map. */
+
+@media (prefers-reduced-motion: no-preference) {
+  .map--live .map__sweep {
+    animation: sweep-idle 20s var(--ease) 6s infinite both !important;
+  }
+  @keyframes sweep-idle {
+    0%   { left: var(--sweep-from, 26%); opacity: 0 }
+    3%   { opacity: .34 }
+    17%  { opacity: .22 }
+    20%  { left: calc(100% - 1px); opacity: 0 }
+    100% { left: calc(100% - 1px); opacity: 0 }
+  }
 }

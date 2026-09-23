@@ -310,17 +310,17 @@ export function arrive(el, { step = 90, start = 0, max = 1400 } = {}) {
    cycle is seventeen seconds: you notice that the field is alive, not that
    anything is moving. Markers pause the instant they leave the viewport. */
 
-export function drift(selector, { amp = 3.2, root = document } = {}) {
+export function drift(selector, { amp = 6, root = document, period = 7000 } = {}) {
   const els = [...root.querySelectorAll(selector)];
   if (!els.length || reduced.matches) return;
 
   const rnd = seeded(20260922);
   const parts = els.map((el) => ({
     el,
-    ax: amp * (0.55 + rnd() * 0.75),
-    ay: amp * (0.55 + rnd() * 0.75),
-    px: 9000 + rnd() * 8000,          // 9–17s
-    py: 11000 + rnd() * 6000,
+    ax: amp * (0.6 + rnd() * 0.8),
+    ay: amp * (0.6 + rnd() * 0.8),
+    px: period + rnd() * period * 0.9,        // ~7-13s at the default
+    py: period * 1.25 + rnd() * period * 0.7,
     o: rnd() * 20000,
   }));
 
