@@ -152,6 +152,12 @@
 
 /* ── print: the site is a document too ─────────────────────────────────── */
 @media print{
+  /* paper has no scroll position, so nothing may depend on one */
+  [data-reveal],.lines .ln > span,.tally i,.marker{
+    opacity:1 !important;transform:none !important;
+    -webkit-mask-image:none !important;mask-image:none !important;
+    animation:none !important;
+  }
   .nav,.rail,.map__filters,.btn,.act,.dialog{display:none !important}
   body{background:#fff;font-size:11pt}
   .section{padding-block:18pt}

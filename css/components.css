@@ -227,8 +227,10 @@
   border-top:2px solid var(--ink);border-right:2px solid var(--ink);
   transition:width var(--t) var(--ease),height var(--t) var(--ease);
 }
-.compare__lab{position:absolute;left:14px;bottom:12px;z-index:3}
-.compare__lab--out{left:auto;right:18px;top:16px;bottom:auto}
+/* The plot carries no labels of its own. They repeated the footer, and at
+   narrow widths the grey block is too small to hold one: a caption was
+   landing on top of the people it was describing. The footer says it
+   instead, in words, at every width. */
 /* A person outside the search is vermilion. The same person, once the search
    widens far enough to include them, becomes part of the market being
    searched — and turns grey. Nothing moves; only the meaning changes. */
@@ -277,7 +279,7 @@
 }
 .filter[aria-pressed="true"]{box-shadow:inset 0 -2px 0 var(--verm)}
 
-.map__plotwrap{position:relative;overflow-x:auto;overscroll-behavior-x:contain;perspective:1400px}
+.map__plotwrap{position:relative;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;perspective:1400px}
 /* said only where it is true: the wrapper adds this class itself when the
    plot is wider than the screen */
 .map__hint{display:none}
@@ -299,8 +301,21 @@
   position:absolute;left:0;bottom:0;width:26%;height:38%;
   background:var(--field);
   border-top:2px solid var(--ink);border-right:2px solid var(--ink);
+  /* the base plane of the scene. Everything inside the searched market sits
+     on it or just in front of it, never behind it — a person we have counted
+     inside this block must be visible inside this block. */
+  transform:translateZ(0);
 }
-.map__searchedlab{position:absolute;left:14px;bottom:12px;z-index:2}
+/* the block names itself, inside its own edges. It is the one label on the
+   map that must never run past the boundary it describes, because the
+   boundary is the argument. */
+.map__searchedlab{
+  position:absolute;left:14px;right:12px;bottom:11px;z-index:2;
+  line-height:1.5;text-wrap:balance;
+}
+.map__searchedlab b{
+  display:block;font-weight:400;color:var(--ink);letter-spacing:.2em;
+}
 .map__axis{
   position:absolute;font-family:var(--M);font-size:11px;letter-spacing:.16em;
   text-transform:uppercase;color:var(--mid);
@@ -326,7 +341,9 @@
    still part of the market, it is just not part of the question */
 .map__plot.is-plotted .marker[data-state="out"]{opacity:.14;pointer-events:none;--s:1}
 .marker:hover,.marker:focus-visible{--s:1.9}
-.marker--searched{background:var(--grey)}
+/* a person inside the searched market is drawn ON the block, never behind
+   it: grey on grey needs its own edge to stay countable. */
+.marker--searched{background:var(--grey);box-shadow:0 0 0 1px var(--paper)}
 
 .map__read{
   position:absolute;z-index:6;width:250px;
@@ -524,7 +541,13 @@
   font-family:var(--M);font-size:13px;line-height:2;color:var(--slate);margin-top:14px;
   font-variant-numeric:tabular-nums;
 }
-.tcard__foot{margin-top:auto;padding-top:22px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.tcard__foot{
+  margin-top:auto;padding-top:22px;
+  /* stacked, never side by side: a short availability used to sit
+     beside the action and a long one below it, so cards in the same
+     row ended at different heights. */
+  display:flex;flex-direction:column;align-items:flex-start;gap:14px;
+}
 .avail{display:inline-flex;align-items:center;gap:9px;font-size:14px;color:var(--ink)}
 .avail::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--confirmed);flex:none}
 .tcard[hidden]{display:none}

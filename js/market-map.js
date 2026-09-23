@@ -90,9 +90,11 @@ function build(count, seed) {
       unknown: UNKNOWN[Math.floor(r() * UNKNOWN.length)],
       // Position: x is distance from the searched market, y is experience.
       // People already inside that market are plotted inside the grey block,
-      // which is a place rather than a level of experience.
+      // which is a place rather than a level of experience. They occupy the
+      // upper band of that block only: the lower band belongs to the label
+      // that names it, and a marker must never sit inside a word.
       x: inside ? 3 + r() * 18 : 30 + r() * 66,
-      y: inside ? 66 + r() * 26 : 6 + (1 - Math.min(years, 18) / 18) * 78 + (r() * 8 - 4),
+      y: inside ? 64 + r() * 16 : 6 + (1 - Math.min(years, 18) / 18) * 78 + (r() * 8 - 4),
     });
   }
   return people;
@@ -141,8 +143,10 @@ export class MarketMap {
       /* three depth planes, assigned by how far outside the searched market
          a person is. The field leans under the pointer and the near planes
          travel further than the far ones — the market gains a depth the
-         count alone cannot show. */
-      b.style.setProperty('--mz', `${p.inside ? -14 : Math.round((p.x - 30) / 66 * 34) + 4}px`);
+         count alone cannot show. People inside the searched market sit at
+         +1px: on the block rather than behind it. A negative depth here put
+         them behind an opaque plane and they disappeared. */
+      b.style.setProperty('--mz', `${p.inside ? 1 : Math.round((p.x - 30) / 66 * 34) + 4}px`);
       /* plotted in the order they were counted, not all at once */
       b.style.setProperty('--d', `${Math.min(i * 14, 900)}ms`);
       b.dataset.id = String(p.id);

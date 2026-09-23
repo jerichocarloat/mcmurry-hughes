@@ -236,6 +236,12 @@ dropped and the drift is kept.
   the hover panel, so the map is readable without a pointer and without sight.
 * `prefers-reduced-motion: reduce` disables every reveal, tilt and parallax and
   leaves the site fully usable.
+* Works with JavaScript off. Every entrance animation is gated behind a `.js`
+  class set by a one-line inline script in each `<head>`. If that script does
+  not run, nothing is hidden and the full argument is on the page. Only the
+  live map, the boundary slider, the filters and the forms need JavaScript.
+* Prints. `@media print` forces every revealed element, marker and tally square
+  visible, because paper has no scroll position.
 * Contrast: ink on paper ~18:1, slate on paper ~9:1. Vermilion is used at 18px
   regular or above, never for body copy. No information is carried by colour
   alone — the grey block is labelled, and the vermilion flag carries text.
@@ -253,6 +259,18 @@ GPU-friendly `transform`/`opacity` only. Page weight is roughly 300–600 KB
 depending on how many photographs a page carries.
 
 ---
+
+## Two rules the illustrative fields depend on
+
+* **Nothing sits behind the grey block.** The searched market is an opaque
+  plane in a 3D scene, so a marker given a negative `--mz` disappears behind
+  it. People inside that market are drawn at `+1px`: on the block, never
+  behind it.
+* **No caption lands on a person.** The block names itself inside its own
+  edges, and the markers inside it keep to the upper band so the nameplate
+  has the lower band to itself. On the home comparison the block is too small
+  at phone width to hold a caption at all, so the footer carries the words
+  instead.
 
 ## The rules a future change must not break
 

@@ -363,17 +363,21 @@ a{color:inherit;text-decoration:none}
 /* Opacity + a short translation. Nothing scales, nothing bounces, nothing
    rotates on entry. Staggering is done with a per-element delay set in JS. */
 
-[data-reveal]{
+/* Gated on .js, which the inline script in every <head> sets. If that script
+   never runs — JavaScript off, blocked, or failed — nothing is hidden and the
+   whole page is readable exactly as written. An entrance animation must never
+   be the reason a sentence cannot be read. */
+.js [data-reveal]{
   opacity:0;transform:translateY(18px);
   transition:opacity var(--t-slow) var(--ease),transform var(--t-slow) var(--ease);
   transition-delay:var(--d,0ms);
 }
-[data-reveal].is-in{opacity:1;transform:none}
+.js [data-reveal].is-in{opacity:1;transform:none}
 
 /* A masked reveal, left to right — the same gesture as the search widening.
    Mask, not clip-path: a clipped element has no intersection area, so the
    observer that is meant to reveal it never sees it arrive. */
-[data-reveal="wipe"]{
+.js [data-reveal="wipe"]{
   opacity:1;transform:none;
   -webkit-mask-image:linear-gradient(90deg,#000 0 100%);
           mask-image:linear-gradient(90deg,#000 0 100%);
@@ -383,12 +387,12 @@ a{color:inherit;text-decoration:none}
   transition:-webkit-mask-size 1.1s var(--ease),mask-size 1.1s var(--ease);
   transition-delay:var(--d,0ms);
 }
-[data-reveal="wipe"].is-in{-webkit-mask-size:100% 100%;mask-size:100% 100%}
+.js [data-reveal="wipe"].is-in{-webkit-mask-size:100% 100%;mask-size:100% 100%}
 
 /* line-by-line statement reveal */
 .lines{display:block}
 .lines .ln{display:block;overflow:hidden}
-.lines .ln > span{
+.js .lines .ln > span{
   display:block;transform:translateY(105%);
   transition:transform 1s var(--ease);
   transition-delay:var(--d,0ms);
