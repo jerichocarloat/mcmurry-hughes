@@ -1,15 +1,13 @@
 /* =========================================================================
    McMURRY & HUGHES — jobs.js
-   The roles being worked now. For the people we want to call, not for clients.
+   The roles being worked now. For job seekers, not for clients.
 
    THE RULES THIS PAGE KEEPS
-     Every role is one we are really working. The pay range is on the page —
-     no hidden band, no "competitive". No login. No CV upload form. Every
-     application gets an answer.
+     A listed role is one we are really working. The pay range is on the
+     page — no hidden band, no "competitive". No login.
 
-   THE ROLES BELOW ARE ILLUSTRATIVE and labelled as such on the page.
-   Replace `ROLES` with the live requisition feed — see README, "Ready for
-   real data". The shape is the contract.
+   To connect real data, replace `ROLES` with the requisition feed — see
+   README, "Ready for real data". The shape is the contract.
    ========================================================================= */
 
 export const ROLES = [
@@ -69,13 +67,14 @@ function row(r) {
     <td data-l="Language">${r.lang}</td>
     <td data-l="Pay"><span class="pay">${r.pay}</span></td>
     <td data-l="Why you may fit">${r.fit}</td>
-    <td data-l=""><button class="act" type="button" data-apply="${r.id}">Apply for this role</button></td>`;
+    <td data-l=""><button class="act" type="button" data-apply="${r.id}" aria-label="Apply for this role: ${r.role}">Apply for this role</button></td>`;
   return tr;
 }
 
 export function jobs(root, opts = {}) {
   const body = root.querySelector('[data-jobs-body]');
   const countEl = root.querySelector('[data-jobs-count]');
+  const nounEl = root.querySelector('[data-jobs-noun]');
   const limit = Number(root.dataset.limit) || ROLES.length;
   const list = ROLES.slice(0, limit);
 
@@ -96,6 +95,7 @@ export function jobs(root, opts = {}) {
       if (ok) n += 1;
     });
     if (countEl) countEl.textContent = String(n);
+    if (nounEl) nounEl.textContent = n === 1 ? 'role open' : 'roles open';
     filters.forEach((f) => f.setAttribute('aria-pressed', String(f.dataset.lang === active)));
   };
 

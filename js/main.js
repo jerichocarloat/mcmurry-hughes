@@ -6,13 +6,12 @@
 
    No framework. No bundler. No third-party library — Three.js and GSAP were
    both considered and neither earns its weight here: the window, the sheets
-   and the cards are CSS 3D transforms on a handful of planes, and the motion
-   is four transitions. See README, "External dependencies: none".
+   and the map are CSS 3D transforms on a handful of planes, and the motion
+   is a few transitions. See README, "External dependencies: none".
    ========================================================================= */
 
 import {
-  reveal, lines, depth, depthAll, parallax, rail, reduced,
-  arrive, drift, magnet, tilt, scrollDepth, breathe, reach, pull, cssScroll,
+  reveal, rail, reduced, drift,
 } from './motion.js';
 
 /* ── navigation ───────────────────────────────────────────────────────── */
@@ -22,19 +21,28 @@ function nav() {
   if (!el) return;
 
   let ticking = false;
+  let lastY = window.scrollY;
   const onScroll = () => {
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(() => {
-      el.dataset.scrolled = String(window.scrollY > 24);
+      const y = window.scrollY;
+      el.dataset.scrolled = String(y > 24);
+      /* hide going down (after the first screen), show going up */
+      if (el.dataset.open === 'true' || el.contains(document.activeElement) || y < 240) el.dataset.hidden = 'false';
+      else if (y - lastY > 6) el.dataset.hidden = 'true';
+      else if (lastY - y > 6) el.dataset.hidden = 'false';
+      lastY = y;
       ticking = false;
     });
   };
+  el.addEventListener('focusin', () => { el.dataset.hidden = 'false'; });
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  /* Below 768px the five links move into a panel. Five items in, five items
-     out — the panel never reveals anything the bar was not already offering. */
+  /* Below 1100px the items move into a panel, grouped by audience. The same
+     items in, the same items out — the panel never reveals anything the bar
+     was not already offering. */
   const toggle = el.querySelector('.nav__toggle');
   const panel = el.querySelector('.nav__panel');
   if (!toggle || !panel) return;
@@ -52,15 +60,19 @@ function nav() {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && el.dataset.open === 'true') { set(false); toggle.focus(); }
   });
-  window.matchMedia('(min-width: 769px)').addEventListener('change', (m) => { if (m.matches) set(false); });
+  window.matchMedia('(min-width: 1101px)').addEventListener('change', (m) => { if (m.matches) set(false); });
 }
 
 /* ── forms ────────────────────────────────────────────────────────────── */
-/* Every form here does something real. With no endpoint configured it
-   composes the message and hands it to the visitor's mail client addressed
-   to the named person — which is how M&H says it answers, and is honest
-   about where the message goes. Set data-endpoint on the form to POST as
-   JSON instead; see README. */
+/* With no endpoint configured, a form here does not send anything. It
+   composes an email and hands it to the visitor's own email program,
+   addressed to the named person, and the confirmation says exactly that:
+   a draft is open, nothing has been sent, and any file has to be attached
+   by hand. Visitors on webmail may get no draft at all, so the confirmation
+   also offers to copy the message.
+   Set data-endpoint on the form to POST instead; see README. Each form also
+   carries action="mailto:…" method="post" so that without JavaScript it
+   still goes to the same person and never puts personal data in a URL. */
 
 const CONTACT = 'tino@mcmurry-hughes.com';
 
@@ -147,10 +159,16 @@ function validate(form) {
 function compose(form) {
   const data = new FormData(form);
   const lines_ = [];
+  /* hidden context first — which profile or role the message is about */
+  form.querySelectorAll('input[type="hidden"]').forEach((h) => {
+    if (h.value.trim()) lines_.push(`${h.name.toUpperCase()}: ${h.value}`);
+  });
   form.querySelectorAll('.field, fieldset').forEach((field) => {
+    if (field.hidden) return;
     const input = field.querySelector('input, select, textarea');
     if (!input) return;
-    const label = field.querySelector('label, legend')?.textContent.trim() ?? input.name;
+    const label = (field.querySelector('label, legend')?.textContent.trim() ?? input.name)
+      .replace(/\s*\(optional\)$/i, '');
     /* a file cannot travel in a mailto, so the message names it and the
        status line asks the sender to attach it — better than pretending */
     const value = input.type === 'file'
@@ -187,6 +205,7 @@ function forms() {
       const subject = form.dataset.subject || 'McMurry & Hughes';
       const body = compose(form);
       const endpoint = form.dataset.endpoint;
+      const attach = form.dataset.attach;              // e.g. "your CV"
 
       const file = fileIn(form);
 
@@ -205,32 +224,48 @@ function forms() {
           if (status) {
             status.dataset.kind = 'error';
             status.classList.add('is-on');
-            status.textContent = 'That did not send. Write to ' + CONTACT + ' and it will be answered the same way.';
+            status.textContent = `This did not send. Please write to ${CONTACT} instead.`;
           }
           return;
         }
-      } else {
-        window.location.href =
-          `mailto:${CONTACT}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        if (status) {
+          status.dataset.kind = 'ok';
+          status.classList.add('is-on');
+          status.innerHTML = `<span class="label label--ink">Sent</span>
+            <p style="margin-top:10px">Your message has been sent to Tino Langner, who will reply by email.</p>`;
+        }
+        form.querySelector('button[type="submit"]')?.setAttribute('disabled', '');
+        return;
       }
+
+      /* No endpoint: hand the message to the visitor's own email program.
+         Nothing has been sent, and the confirmation says so. */
+      window.location.href =
+        `mailto:${CONTACT}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
       if (status) {
         status.dataset.kind = 'ok';
         status.classList.add('is-on');
-        /* If the message went to a mail client, the file did not go with it.
-           Say so plainly rather than letting someone believe their CV was
-           sent. With an endpoint configured, it went with the form. */
-        const note = (!endpoint && file)
-          ? `<p style="margin-top:10px"><b>Attach ${file.name} to that email before you send it.</b> A mail
-             client cannot take the file from a web page.</p>`
-          : '';
-        status.innerHTML = `<span class="label label--ink">Sent</span>
-          ${note}
-          <p style="margin-top:10px">Tino Langner replies within one working day, by name.
-          If your mail client did not open, write to
-          <a class="link" href="mailto:${CONTACT}">${CONTACT}</a>${file ? ', with the file attached' : ''}.</p>`;
+        const need = attach || (file ? file.name : '');
+        status.innerHTML = `<span class="label label--ink">Not sent yet · your email draft is ready</span>
+          <p style="margin-top:10px">Your email program should now show a draft to
+          <a class="link" href="mailto:${CONTACT}">${CONTACT}</a> with your answers in it.
+          <b>Nothing has been sent until you press send there.</b></p>
+          ${need ? `<p style="margin-top:10px"><b>Attach ${need} to that email before you send it.</b>
+          A web page cannot add the file for you.</p>` : ''}
+          <p style="margin-top:10px">No draft appeared? Copy your message and send it from any email account.</p>
+          <button class="act" type="button" data-copy style="margin-top:12px">Copy my message</button>`;
+        const copy = status.querySelector('[data-copy]');
+        copy?.addEventListener('click', async () => {
+          const text = `To: ${CONTACT}\nSubject: ${subject}\n\n${body}`;
+          try {
+            await navigator.clipboard.writeText(text);
+            copy.textContent = 'Copied. Paste it into a new email';
+          } catch {
+            copy.textContent = `Copy failed. Please write to ${CONTACT}`;
+          }
+        });
       }
-      form.querySelector('button[type="submit"]')?.setAttribute('disabled', '');
     });
   });
 }
@@ -250,7 +285,7 @@ export function openDialog(id, fill) {
   fill?.(d);
   if (typeof d.showModal === 'function') d.showModal();
   else d.setAttribute('open', '');
-  d.querySelector('input, select, textarea, button')?.focus();
+  d.querySelector('input:not([type="hidden"]), select, textarea')?.focus();
 }
 
 /* ── page modules ─────────────────────────────────────────────────────── */
@@ -264,94 +299,78 @@ async function pages() {
 
     if (mapRoot) {
       new m.MarketMap(mapRoot);
-      const plot = mapRoot.querySelector('.map__plot');
-      /* the field leans under the pointer; the people on it drift, and the
-         ones near the pointer notice it */
-      tilt(plot, { max: 2, area: mapRoot.querySelector('.map__plotwrap') });
-      mapRoot.querySelector('.map__plotwrap')
-        ?.addEventListener('pointerenter', () => plot.classList.add('is-live'));
-      mapRoot.querySelector('.map__plotwrap')
-        ?.addEventListener('pointerleave', () => plot.classList.remove('is-live'));
-      /* the whole counted field is alive: the people outside the search and
-         the people inside it, at the same rate, because they are the same
-         kind of thing seen from two sides */
-      drift('.map__plot .marker', { amp: 5.5, root: mapRoot, period: 6500 });
-      magnet(plot, '.marker', { radius: 150, lift: 0.7, pull: 6 });
-      reach(plot);
+      drift('.map__plot .marker', { amp: 9, seed: 76, min: 3.8, max: 5.6 });
     }
-
     if (compareRoot) {
       m.comparison(compareRoot);
-      const plot = compareRoot.querySelector('.compare__plot');
-      drift('.compare__dot', { amp: 6, root: compareRoot, period: 6000 });
-      magnet(plot, '.compare__dot', { radius: 150, lift: 0.6, pull: 5 });
+      drift('.compare__dot', { amp: 7, seed: 54, min: 3.8, max: 5.6 });
     }
   }
 
   const talentRoot = document.querySelector('[data-talent]');
   if (talentRoot) {
     const t = await import('./talent.js');
-    t.talent(talentRoot, {
-      onAsk: (id) => {
-        const target = document.getElementById('ask');
-        if (!target) { window.location.href = `talent.html#ask-${id}`; return; }
-        openDialog('ask', (d) => {
-          d.querySelector('[data-ref]').textContent = `Talent #${id}`;
-          d.querySelector('input[name="candidate"]').value = `Talent #${id}`;
-        });
-      },
-    });
+    const ask = (id) => {
+      /* the home page shows the cards but not the form: go to the talent
+         page, which opens the question for that profile */
+      if (!document.getElementById('ask')) { window.location.href = `talent.html#ask-${id}`; return; }
+      const ref = `Talent #${id}`;
+      openDialog('ask', (d) => {
+        d.querySelector('[data-ref]').textContent = ref;
+        d.querySelector('input[name="profile"]').value = ref;
+      });
+    };
+    t.talent(talentRoot, { onAsk: ask });
+    const m = location.hash.match(/^#ask-(\d+)$/);
+    if (m && t.PEOPLE.some((p) => p.id === m[1])) ask(m[1]);
   }
 
   const jobsRoot = document.querySelector('[data-jobs]');
   if (jobsRoot) {
     const j = await import('./jobs.js');
+    const fill = (ref, heading) => (d) => {
+      d.querySelector('[data-ref]').textContent = ref;
+      d.querySelector('input[name="role"]').value = ref;
+      d.querySelector('#apply-h').textContent = heading;
+    };
     j.jobs(jobsRoot, {
-      onApply: (r) => {
-        if (!document.getElementById('apply')) { window.location.href = `jobs.html#${r.id}`; return; }
-        openDialog('apply', (d) => {
-          d.querySelector('[data-ref]').textContent = r.role;
-          d.querySelector('input[name="role"]').value = r.role;
-        });
-      },
+      onApply: (r) => openDialog('apply', fill(r.role, 'Apply for this role')),
     });
+    document.querySelector('[data-apply-general]')
+      ?.addEventListener('click', () => openDialog('apply', fill('General application', 'Send your details')));
   }
 }
 
 /* ── boot ─────────────────────────────────────────────────────────────── */
 
 function boot() {
+  /* A page opens at its top unless the link names a section. Without this,
+     a reload — or a page shown inside a frame that keeps its own scroll —
+     reopened the evidence page at the foot of the record. */
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  if (!location.hash) window.scrollTo(0, 0);
+
+  /* the scrollbar's width, so fixed things (the rail) can find the column */
+  const sbw = () => document.documentElement.style.setProperty(
+    '--sbw', `${window.innerWidth - document.documentElement.clientWidth}px`);
+  sbw();
+  window.addEventListener('resize', sbw, { passive: true });
+
   nav();
   rail();
   reveal();
-  lines();
-  /* the browser does the scroll work where it can — see motion.css */
-  if (!cssScroll) parallax();
-  pull('.btn--primary', { radius: 130, max: 7 });
   forms();
   attachments();
   dialogs();
 
-  /* The hero window follows the pointer across the whole hero, which is what
-     makes it read as an object in the room rather than a graphic. Then the
-     people inside it arrive one at a time, never quite settle, notice a
-     pointer that comes near them, and the whole object keeps turning as the
-     page scrolls past it. */
-  const win = document.querySelector('.window');
-  if (win) {
-    const obj = win.querySelector('.window__obj');
-    depth(obj, { max: 5, shadow: 16, area: win.closest('.hero') || win });
-    if (!cssScroll) scrollDepth(obj, { max: 5, rise: 26 });
-    breathe(obj, { max: 1.1 });
-    arrive(win.querySelector('.window__people'), { step: 130, start: 900, max: 1100 });
-    magnet(win, '.person', { radius: 210, lift: 0.95, pull: 9 });
-  }
-  drift('.window__people .person', { amp: 7.5, period: 5600 });
-  drift('.window__insiders .person', { amp: 5, period: 6400 });
-  drift('.sheet__mini .person', { amp: 3, period: 7000 });
+  /* The people squares drift, everywhere they appear. The hero's paths are
+     in its markup; the rest are seeded here. The frames never move. */
+  drift('.window__people .person', { amp: 15, seed: 11, min: 4.6, max: 6.8 });
+  drift('.window__insiders .person', { amp: 7, seed: 12, min: 4.6, max: 6.8 });
+  drift('.mini__p', { amp: 12, seed: 3, min: 3.8, max: 5.6 });
+  drift('.mini__g', { amp: 7, seed: 4, min: 3.8, max: 5.6 });
+  drift('.sheet__mini .person', { amp: 7, seed: 9, min: 3.8, max: 5.6 });
 
-  depthAll('.sheet', { max: 3.4, shadow: 12 });
-  depthAll('.tcard', { max: 2.4, shadow: 9 });
 
   document.querySelectorAll('[data-year]').forEach((el) => {
     el.textContent = String(new Date().getFullYear());
