@@ -6,14 +6,13 @@
      1  CROSS-DOCUMENT VIEW TRANSITIONS — the site navigates like one
         application. The mark and the navigation hold their position while
         the page underneath them changes.
-     2  SCROLL-DRIVEN ANIMATIONS — animation-timeline: view() / scroll().
-        These run off the main thread. No scroll listener, no rAF, no jank,
-        and they cannot fall out of sync with the scroll position the way a
-        JavaScript parallax always eventually does.
-     3  ANIMATED CUSTOM PROPERTIES — registered with @property, so a scroll
-        timeline can drive a rotation that COMPOSES with the pointer's
-        rotation instead of overwriting it. This is the piece that makes the
-        hero window answer the scroll and the pointer at the same time.
+     The hero's drift lives with the window in components.css.
+
+   What is deliberately NOT here any more (brand book part eight; production
+   notes): the rail filling like a progress bar, photograph parallax, rules
+   and step marks drawing themselves, the tally building square by square,
+   a magnetic button, the line drawn to a hovered marker, and the idle sweep
+   that crossed the map every twenty seconds. Nothing on this site loops.
 
    Every block is feature-detected. Where the browser does not support it,
    the JavaScript in motion.js does the same job, and where neither is
@@ -23,10 +22,6 @@
 
 /* ── registered properties: the ones a timeline animates ───────────────── */
 
-@property --srx { syntax: '<angle>';  inherits: false; initial-value: 0deg }
-@property --sry { syntax: '<angle>';  inherits: false; initial-value: 0deg }
-@property --sty { syntax: '<length>'; inherits: false; initial-value: 0px }
-@property --py  { syntax: '<length>'; inherits: false; initial-value: 0px }
 
 /* ══ 1 · VIEW TRANSITIONS ═══════════════════════════════════════════════ */
 /* The whole site is one document as far as the reader is concerned: the
@@ -63,137 +58,85 @@
   }
 }
 
-/* ══ 2 · SCROLL-DRIVEN ══════════════════════════════════════════════════ */
+/* ══ 2 · SCROLL-LINKED — FOCUS IN, FOCUS OUT ════════════════════════════ */
+/* One behaviour, driven only by the reader's scroll: things come into focus
+   as they arrive (opacity up, a light blur clearing, a short rise) and go
+   out of focus as they leave the top — late and lightly, so nothing is ever
+   blurry while it is still being read. Scroll back and it reverses.
+   Groups (steps, documents, profiles, figures) cascade: each item's range
+   starts a little later than the one before, so a row assembles left to
+   right instead of arriving as a block. Nothing scales, nothing slides
+   sideways, nothing moves on its own. Feature-detected; absent under reduced
+   motion (the one-time reveals in main.css apply). */
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
 
-    /* THE RAIL fills with the document's own progress. A scroll timeline on
-       the root: the browser drives it, this file never measures anything. */
-    .rail__line { position: absolute }
-    .rail__line::after {
-      content: ""; position: absolute; inset: 0; background: var(--verm);
-      transform-origin: 50% 0; transform: scaleY(0);
-      animation: rail-fill linear both;
-      animation-timeline: scroll(root block);
-    }
-    @keyframes rail-fill { to { transform: scaleY(1) } }
+    /* the timed reveal stands down: the scroll does this job now */
+    .js [data-reveal]:not(.shead){opacity:1;transform:none;transition:none;
+      -webkit-mask-image:none;mask-image:none}
 
-    /* THE WINDOW keeps turning as the page leaves it. The timeline animates
-       registered custom properties, not `transform`, so the pointer's
-       rotation and the idle breath keep working underneath it. */
-    .window__obj {
-      animation: window-exit linear both;
-      animation-timeline: view();
-      animation-range: exit 0% exit 100%;
+    @keyframes focus-in{
+      from{opacity:0;filter:blur(5px);transform:translateY(24px)}
+      to  {opacity:1;filter:blur(0);transform:none}
     }
-    @keyframes window-exit {
-      to { --srx: 6deg; --sry: -3.6deg; --sty: -30px }
+    @keyframes focus-out{
+      from{opacity:1;filter:blur(0);transform:none}
+      to  {opacity:0;filter:blur(3px);transform:translateY(-12px)}
     }
+    @keyframes fade-in {from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+    @keyframes fade-out{from{opacity:1}to{opacity:0}}
 
-    /* PHOTOGRAPHY moves slower than the page it is cut into, and releases
-       its scale as it arrives. Off the main thread, so it cannot judder. */
-    .plate img[data-parallax] {
-      height: 118%;
-      animation: plate-drift linear both;
-      animation-timeline: view();
-      animation-range: cover 0% cover 100%;
-    }
-    @keyframes plate-drift {
-      from { --py: -34px } to { --py: 34px }
+    /* TYPE, BLOCKS AND PHOTOGRAPHS */
+    .say:not(.hero__say),
+    .js [data-reveal]:not(.shead):not(.map):not(.compare):not(.sheets):not(.steps),
+    .steps > .step, .sheets > .sheet, .talent > .tcard, .figs > div{
+      animation:focus-in linear both, focus-out linear forwards;
+      animation-timeline:view(), view();
+      animation-range:entry 0% entry 70%, exit 60% exit 100%;
     }
 
-    /* THE STEPS are marked off as you pass them: a vermilion hairline fills
-       the rule above each one, in sequence, driven by the scroll itself. */
-    .step { position: relative }
-    .step::before {
-      /* a third of the rule, not the whole rule: a measure mark, not a
-         coloured band. Vermilion is rationed on this site. */
-      content: ""; position: absolute; top: -1px; left: 0; height: 1px;
-      width: 32%; background: var(--verm); transform: scaleX(0);
-      transform-origin: 0 50%;
-      animation: step-mark linear both;
-      animation-timeline: view();
-      animation-range: entry 45% cover 42%;
+    /* THE CASCADE: the 2nd, 3rd and 4th item in a row start a beat later */
+    .steps > :nth-child(4n+2), .sheets > :nth-child(3n+2), .talent > :nth-child(3n+2), .figs > :nth-child(n+2){
+      animation-range:entry 8% entry 78%, exit 60% exit 100%;
     }
-    @keyframes step-mark { to { transform: scaleX(1) } }
-
-    /* THE SECTION HEAD rule draws with the scroll rather than on a trigger,
-       so it is exactly as far along as the reader is. */
-    .shead::after {
-      animation: step-mark linear both;
-      animation-timeline: view();
-      animation-range: entry 70% cover 30%;
-      transition: none;
+    .steps > :nth-child(4n+3), .sheets > :nth-child(3n+3), .talent > :nth-child(3n+3), .figs > :nth-child(n+3){
+      animation-range:entry 16% entry 86%, exit 60% exit 100%;
+    }
+    .steps > :nth-child(4n+4), .figs > :nth-child(n+4){
+      animation-range:entry 24% entry 94%, exit 60% exit 100%;
     }
 
-    /* THE TALLY: twenty-nine squares, drawn left to right as the record
-       arrives — the concentration builds in front of the reader. */
-    .tally i {
-      animation: tally-in linear both;
-      animation-timeline: view();
-      animation-range: entry 25% cover 20%;
+    /* LARGE INTERACTIVE PIECES — the same rhythm, no blur (cost) */
+    .js .map[data-reveal],.js .compare[data-reveal]{
+      animation:fade-in linear both, fade-out linear forwards;
+      animation-timeline:view(), view();
+      animation-range:entry 0% entry 55%, exit 65% exit 100%;
     }
-    @keyframes tally-in { from { opacity: 0 } to { opacity: 1 } }
+
+    /* THE HERO lets go late and quietly: no blur, a short lift */
+    .hero > .wrap{
+      animation:hero-out linear forwards;
+      animation-timeline:view();
+      animation-range:exit 45% exit 100%;
+    }
+    @keyframes hero-out{to{opacity:0;transform:translateY(-32px)}}
   }
 }
 
-/* Where scroll-driven animation is not supported, motion.js does the
-   parallax and the window's scroll rotation with a single rAF-throttled
-   listener. The flag below is what it reads. */
-@supports not (animation-timeline: view()) {
-  :root { --js-scroll: 1 }
-}
-
-/* ══ 3 · THE REACH ══════════════════════════════════════════════════════ */
-/* Hovering a person on the map draws the line between the market the client
-   searches and where that person actually is. It is the distance the desk
-   covers, drawn at the moment someone asks about one person. */
-
-.map__reach {
-  position: absolute; inset: 0; pointer-events: none; z-index: 4;
-  opacity: 0; transition: opacity .3s var(--ease);
-}
-.map__reach.is-on { opacity: 1 }
-.map__reach line {
-  stroke: var(--verm); stroke-width: 1; vector-effect: non-scaling-stroke;
-  stroke-dasharray: var(--len, 400); stroke-dashoffset: var(--len, 400);
-  transition: stroke-dashoffset .55s var(--ease-depth);
-}
-.map__reach.is-on line { stroke-dashoffset: 0 }
-.map__reach text {
-  font-family: var(--M); font-size: 10px; letter-spacing: .16em;
-  text-transform: uppercase; fill: var(--verm);
-}
-
-/* ══ 4 · THE MAGNETIC ACTION ════════════════════════════════════════════ */
-/* The primary action leans towards the pointer before it is clicked — six
-   pixels, and only the action that leads to the market. */
-
-.btn--primary { transition: transform .4s var(--ease-depth), color var(--t-fast) var(--ease) }
-.btn--primary.is-pulled { transition: transform .12s linear }
-.btn--primary { transform: translate3d(var(--bx,0px), var(--by,0px), 0) }
-
-@media (prefers-reduced-motion: reduce) {
-  .btn--primary { transform: none !important }
-  .map__reach { display: none }
-}
-
-/* ══ 5 · THE DESK DOES NOT STOP ═════════════════════════════════════════ */
-/* One faint pass of the search across the full map, every twenty seconds.
-   A third of the strength of the opening sweep: enough to register at the
-   edge of attention, never enough to read as a loading animation. Only on
-   the page whose subject is the map. */
+/* ══ 3 · SECTION RULES ══════════════════════════════════════════════════ */
+/* Every section rule draws in ink from the left, once, when its section
+   head arrives — the same on every section however the reader got there
+   (scrolling, a link, a jump). It used to be tied to the scroll position,
+   so a section reached by a link was already drawn and looked different. */
 
 @media (prefers-reduced-motion: no-preference) {
-  .map--live .map__sweep {
-    animation: sweep-idle 20s var(--ease) 6s infinite both !important;
+  .js .shead{border-bottom-color:var(--hair)}
+  .js .shead::after{
+    content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
+    background:var(--ink);transform-origin:0 50%;transform:scaleX(0);
+    transition:transform 1.1s cubic-bezier(.16,.84,.30,1) .15s;
   }
-  @keyframes sweep-idle {
-    0%   { left: var(--sweep-from, 26%); opacity: 0 }
-    3%   { opacity: .34 }
-    17%  { opacity: .22 }
-    20%  { left: calc(100% - 1px); opacity: 0 }
-    100% { left: calc(100% - 1px); opacity: 0 }
-  }
+  .js .shead.is-in::after{transform:scaleX(1)}
+  .section--ink .shead::after{background:var(--paper)}
 }

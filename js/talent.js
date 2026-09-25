@@ -12,10 +12,9 @@
    This is not a public database. It is a preview, and the only action on it
    is to ask about someone.
 
-   THE RECORDS BELOW ARE ILLUSTRATIVE and labelled as such on the page.
-   Replace `PEOPLE` with a feed from the ATS — see README, "Ready for real
-   data". The shape is the contract: id, role, city, tz, years, lang, pay,
-   available, spoke.
+   To connect real data, replace `PEOPLE` with a feed from the ATS — see
+   README, "Ready for real data". The shape is the contract: id, role, city,
+   tz, years, lang, pay, available, spoke.
    ========================================================================= */
 
 export const PEOPLE = [
@@ -52,13 +51,15 @@ function card(p) {
   const el = document.createElement('article');
   el.className = 'tcard';
   el.dataset.id = p.id;
+  const ref = `Talent #${p.id}`;
+  const ask = 'Ask about this candidate';
   el.innerHTML = `
-    <span class="label">Talent #${p.id}</span>
+    <span class="label">${ref}</span>
     <h3 class="tcard__role">${p.role}</h3>
     <p class="tcard__meta">${p.city} · ${p.tz}<br>${p.years} years<br>${p.lang}<br>${p.pay}</p>
     <div class="tcard__foot">
       <span class="avail">Available ${p.available}</span>
-      <button class="act" type="button" data-ask="${p.id}">Ask about this candidate</button>
+      <button class="act" type="button" data-ask="${p.id}" aria-label="${ask}: ${ref.toLowerCase()}, ${p.role}">${ask}</button>
     </div>`;
   return el;
 }

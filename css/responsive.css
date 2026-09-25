@@ -14,6 +14,7 @@
 
 /* ── 1440 and below: the rail loses its generous margin ────────────────── */
 @media (max-width:1440px){
+  :root{--wrapmax:1360px}
   .wrap{max-width:1360px}
 }
 
@@ -35,19 +36,20 @@
   .hero__grid{grid-template-columns:1fr;gap:44px}
   .hero{min-height:auto;padding-top:132px}
   .hero__say{max-width:18ch}
-  .cols--2,.cols--lead,.cols--aside{grid-template-columns:1fr}
+  .cols--2,.cols--lead,.cols--aside,.split{grid-template-columns:1fr}
+  .split__side{position:static}
   .cols--3{grid-template-columns:repeat(2,1fr)}
   .cols--4,.cols--5{grid-template-columns:repeat(2,1fr)}
   .talent{grid-template-columns:repeat(2,1fr)}
   .sheets{grid-template-columns:1fr}
   .steps,.steps--4{grid-template-columns:repeat(2,1fr)}
-  .plate--bleed{height:clamp(280px,46vh,480px)}
 }
 
-/* ── 768: one column, and the navigation changes shape ─────────────────── */
-@media (max-width:768px){
-  :root{--band:clamp(56px,11vw,92px)}
-
+/* ── 1100: the navigation becomes a panel ─────────────────────────────── */
+/* Six items and one action do not fit on one line below this width. The
+   panel shows the same items, grouped by audience — nothing hidden, nothing
+   added. */
+@media (max-width:1100px){
   .nav__toggle{display:inline-flex;align-items:center}
   /* the mark and the Close control stay above the panel, so neither vanishes
      while the panel is open */
@@ -66,9 +68,24 @@
   .nav__links li{width:100%}
   .nav__link{
     display:block;font-size:13px;letter-spacing:.18em;width:100%;
-    padding:20px 0;border-bottom:1px solid var(--hairsoft);
+    padding:18px 0;border-bottom:1px solid var(--hairsoft);
   }
-  .nav__link[aria-current="page"]{border-bottom-color:var(--verm)}
+  .nav__link[aria-current="page"]{border-bottom-color:var(--ink)}
+  /* two audiences, two groups, each with a heading */
+  .nav__group{
+    display:block;padding:26px 0 6px;
+    font-family:var(--M);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--slate);
+  }
+  .nav__group:first-child{padding-top:0}
+  .nav__cta{margin:26px 0 0}
+  .nav__cta .btn{width:100%}
+  .nav__seek{padding-left:0;border-left:0}
+  .nav[data-open="true"] .nav__panel{overflow-y:auto}
+}
+
+/* ── 768: one column ───────────────────────────────────────────────────── */
+@media (max-width:768px){
+  :root{--band:clamp(56px,11vw,92px)}
 
   .say--xl{font-size:36px}
   .say--l{font-size:32px}
@@ -77,7 +94,11 @@
   .standfirst{font-size:17px}
   body{font-size:16px}
   /* labels, counts and captions hold their size — they are furniture */
-  .label,.caption,.filter,.nav__link,.flag,.foot__note span{font-size:11px}
+  .label,.caption,.filter,.nav__link,.foot__note span{font-size:11px}
+  .mark__lockup{height:20px}
+  .hero__seek{margin-left:0}
+  .compare__note{margin-left:0}
+  .map__how{margin-left:0}
 
   .cols--3,.cols--4,.cols--5,.talent,.steps,.steps--4{grid-template-columns:1fr}
   .figs{gap:24px 40px}
@@ -96,6 +117,12 @@
 
   .ledger td,.ledger th{font-size:15px}
   .ledger .t{width:38%}
+  /* numbered ledgers stack: index and condition on one line, the reason under it */
+  .ledger--num tr{display:grid;grid-template-columns:40px 1fr;border-bottom:1px solid var(--hairsoft);padding:16px 0}
+  .ledger--num tr:last-child{border-bottom:0}
+  .ledger--num td{border:0;padding:0}
+  .ledger--num .t{width:auto}
+  .ledger--num td:last-child{grid-column:2;margin-top:8px}
 
   /* jobs: the table becomes a stack of records, still a ledger, not cards */
   .jobs thead{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
@@ -104,25 +131,10 @@
   .jobs td{display:grid;grid-template-columns:104px 1fr;gap:16px;border:0;padding:0 0 10px}
   .jobs td::before{
     content:attr(data-l);
-    font-family:var(--M);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mid);
+    font-family:var(--M);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--slate);
   }
   .jobs td:last-child{padding-bottom:0}
 
-  .plate--bleed{height:58vh;min-height:320px}
-  .plate__type{max-width:100%;padding:24px}
-  /* on a phone the type sits at the foot of the plate, so the scrim runs
-     bottom to top instead, in the same eased ramp and with no cut edge */
-  .scrim{
-    background:linear-gradient(0deg,
-      rgba(14,15,18,.92) 0%,
-      rgba(14,15,18,.88) 16%,
-      rgba(14,15,18,.76) 30%,
-      rgba(14,15,18,.58) 44%,
-      rgba(14,15,18,.38) 58%,
-      rgba(14,15,18,.20) 72%,
-      rgba(14,15,18,.08) 86%,
-      rgba(14,15,18,0)   100%);
-  }
 
   .promise{min-height:auto}
 }
@@ -142,18 +154,10 @@
   .map__plot{min-width:720px}
 }
 
-/* ── pointer: coarse — depth interactions are removed, not faked ───────── */
-@media (hover:none){
-  .window__obj{transform:none !important}
-  .sheet,.tcard{transform:none !important}
-  .sheet:hover,.tcard:hover{box-shadow:0 1px 2px rgba(14,15,18,.05)}
-  .plate img[data-parallax]{height:100%;transform:none !important}
-}
-
 /* ── print: the site is a document too ─────────────────────────────────── */
 @media print{
   /* paper has no scroll position, so nothing may depend on one */
-  [data-reveal],.lines .ln > span,.tally i,.marker{
+  [data-reveal],.tally i,.marker{
     opacity:1 !important;transform:none !important;
     -webkit-mask-image:none !important;mask-image:none !important;
     animation:none !important;
@@ -166,11 +170,8 @@
 }
 
 /* ── the rail and a full-bleed plate share the left edge ───────────────── */
-/* The plate runs to the trim, so its rotated caption has to start inside the
-   rail's column or the two sit on top of each other. */
+/* A photograph that runs to the trim passes under the rail, so its rotated
+   caption starts just past the rail's column instead of sitting under it. */
 @media (min-width:1024px){
-  .plate--bleed .plate__cap{left:calc(var(--rail) + 10px)}
-  /* and the type on it starts where the page's own measure starts, so a
-     full-bleed plate reads as part of the column and not as a poster */
-  .plate--bleed .plate__type{padding-left:calc(var(--rail) + 56px)}
+  .section > .plate .plate__cap{left:calc(max(0px, calc(var(--edge) - 40px)) + var(--rail) + 14px)}
 }
