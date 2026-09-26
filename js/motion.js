@@ -83,13 +83,15 @@ export function drift(selector, { amp = 8, seed = 1, min = 3.8, max = 5.6 } = {}
    aria-hidden and its ticks are not in the tab order, because the page's
    headings already carry the same structure. */
 
-export function rail() {
+export function rail(root = document) {
   const el = document.querySelector('.rail');
-  if (!el) return;
-  const sections = [...document.querySelectorAll('[data-rail]')];
-  if (!sections.length) { el.remove(); return; }
-
+  if (!el) return () => {};
+  const sections = [...root.querySelectorAll('[data-rail]')];
   const ticks = el.querySelector('.rail__ticks');
+  ticks.replaceChildren();
+  if (!sections.length) { el.hidden = true; return () => {}; }
+  el.hidden = false;
+
   const label = el.querySelector('.rail__label');
   const num = el.querySelector('.rail__n');
 
@@ -133,6 +135,14 @@ export function rail() {
   set(0); current = 0; measure();
 
   const foot = document.querySelector('.foot');
-  if (foot) new IntersectionObserver((e) => el.classList.toggle('rail--off', e[0].isIntersecting))
-    .observe(foot);
+  const io = foot ? new IntersectionObserver((e) => el.classList.toggle('rail--off', e[0].isIntersecting)) : null;
+  io?.observe(foot);
+
+  /* PROTOTYPE: the review bundle shows one page at a time, so the rail is
+     rebuilt for each page and the old listeners are removed. */
+  return () => {
+    window.removeEventListener('scroll', onScroll);
+    window.removeEventListener('resize', onScroll);
+    io?.disconnect();
+  };
 }

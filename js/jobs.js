@@ -95,7 +95,7 @@ export function jobs(root, opts = {}) {
       if (ok) n += 1;
     });
     if (countEl) countEl.textContent = String(n);
-    if (nounEl) nounEl.textContent = n === 1 ? 'role open' : 'roles open';
+    if (nounEl) nounEl.textContent = n === 1 ? 'example role' : 'example roles';
     filters.forEach((f) => f.setAttribute('aria-pressed', String(f.dataset.lang === active)));
   };
 

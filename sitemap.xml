@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://www.mcmurry-hughes.com/</loc><changefreq>monthly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://www.mcmurry-hughes.com/how-we-work.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.mcmurry-hughes.com/evidence.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.mcmurry-hughes.com/talent.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.mcmurry-hughes.com/jobs.html</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://www.mcmurry-hughes.com/contact.html</loc><changefreq>yearly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.mcmurry-hughes.com/</loc></url>
+  <url><loc>https://www.mcmurry-hughes.com/how-we-work.html</loc></url>
+  <url><loc>https://www.mcmurry-hughes.com/evidence.html</loc></url>
+  <url><loc>https://www.mcmurry-hughes.com/talent.html</loc></url>
+  <url><loc>https://www.mcmurry-hughes.com/jobs.html</loc></url>
+  <url><loc>https://www.mcmurry-hughes.com/about.html</loc></url>
+  <url><loc>https://www.mcmurry-hughes.com/recruiting-firms.html</loc></url>
+  <url><loc>https://www.mcmurry-hughes.com/contact.html</loc></url>
+  <url><loc>https://www.mcmurry-hughes.com/cost.html</loc></url>
 </urlset>

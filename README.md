@@ -10,6 +10,22 @@ website templates. Nothing in the strategy or the identity was changed.
 
 ---
 
+## Site v3 (September 2026): what changed
+
+- The employer action is "Tell us the role". The first document is the market snapshot:
+  free, before you commit, made only for roles we can take on. A full market map is priced per role.
+- New pages: About, For recruiting firms, Cost of an open role. The nav is one flat row:
+  How we work, Evidence, Talent, Jobs, About. Recruiting firms are reached from the footer and About.
+- The problem section is a scroll pull-back (`js/idea.js`): the frame opens on the searched market
+  and widens to the whole market. It replaces the slider demonstration.
+- `js/calculator.js` drives the cost page and prefills the contact form from its answers.
+- `css/site.css` holds every v3 addition and loads after `motion.css`.
+- Photographs regenerated from the masters at higher quality (WebP q86 at 640/1024/1536, JPEG 1536 fallback).
+- Talent profiles and jobs are labelled as examples until real, cleared ones exist.
+- The evidence page no longer carries the "what this shows / does not show" explanation; it lives in
+  the strategy deck. The record, its concentration (20 of 29) and the counts are unchanged.
+- Unconfirmed figures are not published: the "40+ years" experience figure is out until confirmed.
+
 ## Run it locally
 
 Any static server will do. The pages use ES modules, so `file://` will not
@@ -29,12 +45,15 @@ That is the whole build step. There isn't one.
 ## File tree
 
 ```
-/index.html                 home — the employer journey: problem, service, demonstration, fit, record, next step
-/how-we-work.html           the desk, the employer journey, fit, what happens next
-/evidence.html              the live market map + the counted placement record
-/talent.html                anonymous candidate preview, filterable
-/jobs.html                  open roles with pay, and the application flow
-/contact.html               "Request a market map" — the one employer action
+/index.html                 home: the idea, the problem (scroll pull-back), how it works, fit, documents, record, people, next step
+/how-we-work.html           the desk, five steps, who we can help, what we are not
+/evidence.html              an example market map + the counted placement record
+/talent.html                example profiles, filterable (anonymous by design)
+/jobs.html                  example roles with pay, and the application flow
+/about.html                 both sides of the desk: why us, the group (M&H, PCR-Latam, Data2Clean)
+/recruiting-firms.html      research for recruiting firms, PCR-Latam, Data2Clean (footer + About only)
+/contact.html               "Tell us the role": the one employer action, prefilled from the cost check
+/cost.html                  the cost of an open role: estimate, where you have looked, what it suggests
 
 /css/
   main.css                  fonts, tokens, base type, layout, rail, nav, footer, motion primitives

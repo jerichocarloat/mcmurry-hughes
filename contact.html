@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Request a market map · McMurry &amp; Hughes</title>
-<meta name="description" content="Tell McMurry &amp; Hughes about one role you are finding hard to fill. We research the market outside the one you already search and send you a market map.">
+<title>Tell us the role · McMurry &amp; Hughes</title>
+<meta name="description" content="Tell McMurry &amp; Hughes about one role you are finding hard to fill. If we can take it on, we send you a free market snapshot before you commit to anything.">
 <link rel="canonical" href="https://www.mcmurry-hughes.com/contact.html">
 
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="McMurry &amp; Hughes">
-<meta property="og:title" content="Request a market map · McMurry &amp; Hughes">
+<meta property="og:title" content="Tell us the role · McMurry &amp; Hughes">
 <meta property="og:description" content="Show us the role. One role and one question: can you employ someone who is not local?">
 <meta property="og:url" content="https://www.mcmurry-hughes.com/contact.html">
-<meta property="og:image" content="https://www.mcmurry-hughes.com/assets/images/MH_photo_10-1024.jpg">
+<meta property="og:image" content="https://www.mcmurry-hughes.com/assets/images/MH_photo_10-1536.jpg">
 <meta property="og:locale" content="en_GB">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Request a market map · McMurry &amp; Hughes">
+<meta name="twitter:title" content="Tell us the role · McMurry &amp; Hughes">
 <meta name="twitter:description" content="Show us the role. One role and one question: can you employ someone who is not local?">
-<meta name="twitter:image" content="https://www.mcmurry-hughes.com/assets/images/MH_photo_10-1024.jpg">
+<meta name="twitter:image" content="https://www.mcmurry-hughes.com/assets/images/MH_photo_10-1536.jpg">
 <meta name="theme-color" content="#FCFCFA">
 
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -32,6 +32,7 @@
 <link rel="stylesheet" href="css/components.css">
 <link rel="stylesheet" href="css/responsive.css">
 <link rel="stylesheet" href="css/motion.css">
+<link rel="stylesheet" href="css/site.css">
 
 <script type="module" src="js/main.js"></script>
 </head>
@@ -52,15 +53,14 @@
         <li><a class="nav__link" href="talent.html">Talent</a></li>
         <li class="nav__group" aria-hidden="true">For job seekers</li>
         <li class="nav__seek"><a class="nav__link" href="jobs.html">Jobs</a></li>
-        <li class="nav__cta"><a class="btn btn--primary btn--s" href="contact.html" aria-current="page">Request a market map</a></li>
+        <li class="nav__group" aria-hidden="true">The company</li>
+        <li class="nav__firms"><a class="nav__link" href="about.html">About</a></li>
+        <li class="nav__cta"><a class="btn btn--primary btn--s" href="contact.html">Tell us the role</a></li>
       </ul>
     </nav>
     <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-panel">Menu</button>
   </div>
 </header>
-
-<!-- the page rail (search trace): a visual record of where the reader is.
-     Decorative; the headings carry the same structure for assistive tech. -->
 <div class="rail" aria-hidden="true">
   <span class="rail__n">01</span>
   <span class="rail__line"></span>
@@ -70,12 +70,13 @@
 
 <main id="main">
 
-<section class="section phead" id="contact" data-rail="Request a map">
+<section class="section phead" id="contact" data-rail="Tell us the role">
   <div class="wrap">
-    <span class="label label--ink">Request a market map · for employers</span>
+    <span class="label label--ink">Tell us the role · for employers</span>
     <h1 class="say say--xl" style="margin-top:22px">Show us the <span class="hl">role</span>.</h1>
-    <p class="standfirst phead__sub">Tell us about one role you are finding hard to fill. We research the market for it and send you a market map: a short, dated document showing who could do the job outside the market you already search.</p>
-    <p class="small phead__more">We do not charge for the market map, and you keep it whether or not we work together. One question decides whether we can help at all: can you employ someone who is not local?</p>
+    <p class="standfirst phead__sub">Tell us about one role you are finding hard to fill. A named person reads it and replies, usually with one question: can you employ someone who is not local?</p>
+    <p class="small phead__more">If we can take the role on, we send a market snapshot for it: one dated page showing who could do the job outside the market you already search. It is free, it comes before you commit to anything, and you keep it whether or not we work together.</p>
+    <p class="small" data-prefilled hidden style="margin-top:14px"><b>Your answers from the cost check are already filled in.</b></p>
   </div>
 </section>
 
@@ -83,8 +84,7 @@
   <div class="wrap">
     <div class="shead" data-reveal><span class="shead__n">01</span><span class="shead__t">Your role</span><span class="shead__r">For employers · one role, one question</span></div>
     <div class="cols cols--lead">
-      <form class="form" novalidate data-form data-subject="Market map request: one role"
-            action="mailto:tino@mcmurry-hughes.com" method="post" enctype="text/plain">
+      <form class="form" novalidate data-form data-prefill data-subject="Role enquiry: one role">
         <div class="field">
           <label class="label" for="k-name">Name</label>
           <input id="k-name" name="name" type="text" autocomplete="name" required>
@@ -114,6 +114,7 @@
           <legend class="label">Can you employ someone who is not local?</legend>
           <div class="choice">
             <input type="radio" id="k-yes" name="employ" value="Yes" required aria-describedby="k-employ-help"><label for="k-yes">Yes</label>
+            <input type="radio" id="k-eor" name="employ" value="Via a partner or EOR" aria-describedby="k-employ-help"><label for="k-eor">Via a partner or EOR</label>
             <input type="radio" id="k-no" name="employ" value="No" aria-describedby="k-employ-help"><label for="k-no">No</label>
             <input type="radio" id="k-unsure" name="employ" value="Not sure" aria-describedby="k-employ-help"><label for="k-unsure">Not sure</label>
           </div>
@@ -124,15 +125,15 @@
           <label class="label" for="k-note">Anything else <span class="opt">(optional)</span></label>
           <textarea id="k-note" name="note" rows="3"></textarea>
         </div>
-        <p class="form__how">Pressing the button opens a draft email to tino@mcmurry-hughes.com in your own email program. Nothing is sent until you send it. If the role is already written down, you can attach the job description to that email.</p>
-        <button class="btn btn--primary" type="submit">Request a market map</button>
+        <p class="form__how">Your message goes to Tino Langner. If the role is already written down, you can attach the job description when he replies.</p>
+        <button class="btn btn--primary" type="submit">Tell us the role</button>
         <div class="form__status" role="status" aria-live="polite"></div>
       </form>
 
       <aside class="stack">
         <div data-reveal>
           <span class="label label--ink">Who answers</span>
-          <p class="small" style="margin-top:12px">Tino Langner<br><a class="link" href="mailto:tino@mcmurry-hughes.com">tino@mcmurry-hughes.com</a><br>San José · Costa Rica</p>
+          <p class="small" style="margin-top:12px">Tino Langner<br><span style="user-select:all">tino@mcmurry-hughes.com</span><br>San José · Costa Rica</p>
           <p class="small" style="margin-top:12px">We aim to reply within one working day.</p>
         </div>
         <hr class="hairline">
@@ -140,7 +141,7 @@
           <span class="label label--ink">What happens next</span>
           <ol class="small numlist" style="margin-top:12px">
             <li><b>01</b>We reply, with one question.</li>
-            <li><b>02</b>We send you the market map for that role.</li>
+            <li><b>02</b>If we can take the role on, we send you a free market snapshot for it.</li>
             <li><b>03</b>If you want to go ahead, we agree the brief: your standard, the pay, the process, who decides.</li>
             <li><b>04</b>You receive a first shortlist, with who we ruled out and why.</li>
           </ol>
@@ -164,8 +165,7 @@
   <figure class="plate plate--half" data-reveal="wipe">
     <picture>
       <source type="image/webp" srcset="assets/images/MH_photo_10-640.webp 640w, assets/images/MH_photo_10-1024.webp 1024w, assets/images/MH_photo_10-1536.webp 1536w" sizes="100vw">
-      <img src="assets/images/MH_photo_10-1024.jpg" width="1536" height="1024" loading="lazy" decoding="async"
-           alt="San José: an empty reception area in afternoon light, a small sign on the wall.">
+      <img src="assets/images/MH_photo_10-1536.jpg" width="1536" height="1024" loading="lazy" decoding="async" alt="San José: an empty reception area in afternoon light, a small sign on the wall.">
     </picture>
     <figcaption class="plate__cap">San José · Jun</figcaption>
   </figure>
@@ -175,7 +175,7 @@
 
 <footer class="foot">
   <div class="wrap">
-    <div class="foot__grid">
+    <div class="foot__grid foot__grid--5">
       <div>
         <img class="foot__mark" src="assets/icons/MH_lockup_horizontal.svg" width="192" height="24" alt="McMurry &amp; Hughes">
         <p class="small foot__line">An outside recruiting desk. We recruit for companies in the markets their own search doesn't reach.</p>
@@ -187,7 +187,8 @@
           <a href="how-we-work.html#fit">Who we can help</a>
           <a href="evidence.html">Evidence</a>
           <a href="talent.html">Talent</a>
-          <a href="contact.html">Request a market map</a>
+          <a href="cost.html">Cost of an open role</a>
+          <a href="contact.html">Tell us the role</a>
         </div>
       </div>
       <div>
@@ -198,17 +199,25 @@
         </div>
       </div>
       <div>
+        <span class="label label--ink">McMurry &amp; Hughes also</span>
+        <div class="foot__list">
+          <a href="recruiting-firms.html">Research for recruiting firms</a>
+          <a href="https://pcr-latam.com/" target="_blank" rel="noopener">PCR-Latam</a>
+          <a href="https://data2clean.com/" target="_blank" rel="noopener">Data2Clean</a>
+          <a href="about.html">About the group</a>
+        </div>
+      </div>
+      <div>
         <span class="label label--ink">Contact</span>
         <div class="foot__list">
           <span>Tino Langner</span>
-          <a href="mailto:tino@mcmurry-hughes.com">tino@mcmurry-hughes.com</a>
-          <a href="https://www.linkedin.com/company/mcmurry-&amp;-hughes/" target="_blank" rel="noopener" aria-label="McMurry &amp; Hughes on LinkedIn (opens in a new tab)">LinkedIn</a>
+          <span style="user-select:all">tino@mcmurry-hughes.com</span>
           <span>San José · Costa Rica</span>
         </div>
       </div>
     </div>
     <div class="foot__note">
-      <span>&copy; <span data-year>2026</span> McMurry &amp; Hughes</span>
+      <span>&copy; 2026 McMurry &amp; Hughes</span>
       <span>Hiring for Germany · Europe · United States · Canada</span>
     </div>
   </div>

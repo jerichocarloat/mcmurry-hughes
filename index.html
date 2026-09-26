@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>McMurry &amp; Hughes · An outside recruiting desk</title>
-<meta name="description" content="McMurry &amp; Hughes is an outside recruiting desk. For a hard-to-fill role, we research the market beyond the places you usually search, send you a dated market map, then find, interview and introduce the people worth meeting.">
+<meta name="description" content="McMurry &amp; Hughes is an outside recruiting desk. For a hard-to-fill role, we research the market beyond the places you usually search, send you a free market snapshot before you commit, then find, interview and introduce the people worth meeting.">
 <link rel="canonical" href="https://www.mcmurry-hughes.com/">
 
 <meta property="og:type" content="website">
@@ -12,12 +12,12 @@
 <meta property="og:title" content="McMurry &amp; Hughes · An outside recruiting desk">
 <meta property="og:description" content="An outside recruiting desk. We research the market beyond your usual search and show it to you before we ask you for anything.">
 <meta property="og:url" content="https://www.mcmurry-hughes.com/">
-<meta property="og:image" content="https://www.mcmurry-hughes.com/assets/images/MH_photo_02-1024.jpg">
+<meta property="og:image" content="https://www.mcmurry-hughes.com/assets/images/MH_photo_02-1536.jpg">
 <meta property="og:locale" content="en_GB">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="McMurry &amp; Hughes · An outside recruiting desk">
 <meta name="twitter:description" content="An outside recruiting desk. We research the market beyond your usual search and show it to you before we ask you for anything.">
-<meta name="twitter:image" content="https://www.mcmurry-hughes.com/assets/images/MH_photo_02-1024.jpg">
+<meta name="twitter:image" content="https://www.mcmurry-hughes.com/assets/images/MH_photo_02-1536.jpg">
 <meta name="theme-color" content="#FCFCFA">
 
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -33,6 +33,7 @@
 <link rel="stylesheet" href="css/components.css">
 <link rel="stylesheet" href="css/responsive.css">
 <link rel="stylesheet" href="css/motion.css">
+<link rel="stylesheet" href="css/site.css">
 
 <script type="application/ld+json">
 {
@@ -54,12 +55,12 @@
 }
 </script>
 <script type="module" src="js/main.js"></script>
+<script type="module" src="js/idea.js"></script>
 </head>
 
 <body class="page">
 <a class="skip" href="#main">Skip to content</a>
 
-<!-- ── navigation ─────────────────────────────────────────────────────── -->
 <header class="nav">
   <div class="wrap nav__in">
     <a class="mark" href="index.html" aria-label="McMurry &amp; Hughes, home">
@@ -73,15 +74,14 @@
         <li><a class="nav__link" href="talent.html">Talent</a></li>
         <li class="nav__group" aria-hidden="true">For job seekers</li>
         <li class="nav__seek"><a class="nav__link" href="jobs.html">Jobs</a></li>
-        <li class="nav__cta"><a class="btn btn--primary btn--s" href="contact.html">Request a market map</a></li>
+        <li class="nav__group" aria-hidden="true">The company</li>
+        <li class="nav__firms"><a class="nav__link" href="about.html">About</a></li>
+        <li class="nav__cta"><a class="btn btn--primary btn--s" href="contact.html">Tell us the role</a></li>
       </ul>
     </nav>
     <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-panel">Menu</button>
   </div>
 </header>
-
-<!-- the page rail (search trace): a visual record of where the reader is.
-     Decorative; the headings carry the same structure for assistive tech. -->
 <div class="rail" aria-hidden="true">
   <span class="rail__n">01</span>
   <span class="rail__line"></span>
@@ -102,7 +102,7 @@
         <h1 class="say say--xl hero__say">The people you're looking for aren't always where you look.</h1>
         <p class="standfirst hero__sub">McMurry &amp; Hughes is an outside recruiting desk. When a role is hard to fill, we research the market beyond the places you usually search, show you what is there, and then recruit for you in it.</p>
         <div class="btnrow hero__act">
-          <a class="btn btn--primary" href="contact.html">Request a market map</a>
+          <a class="btn btn--primary" href="contact.html">Tell us the role</a>
           <a class="act" href="#how">See how it works</a>
         </div>
       </div>
@@ -153,31 +153,37 @@
   </div>
 </section>
 
-<!-- ══ 01 · THE PROBLEM ════════════════════════════════════════════════ -->
-<section class="section" id="problem" data-rail="The problem">
-  <div class="wrap">
-    <div class="shead" data-reveal>
-      <span class="shead__n">01</span>
-      <span class="shead__t">The problem</span>
-      <span class="shead__r">What a usual search misses</span>
-    </div>
-
-    <div class="cols cols--lead">
-      <div>
-        <h2 class="say say--l">No company sees the <span class="hl">whole</span> market.</h2>
-        <div class="stack" style="margin-top:34px">
-          <p data-reveal>Most companies hire from the part of the market they already know how to reach: their own city, their usual job boards, an agency they have used before, a salary band set a few years ago. Nobody decided that boundary. It grew over time.</p>
-          <p data-reveal>For most roles this works. For a hard role, the right person is often just outside that boundary, so the search keeps coming back with the same few names.</p>
+<!-- ══ 01 · THE PROBLEM — the view pulls back as you scroll ════════════ -->
+<section class="idea" id="problem" data-rail="The problem" data-idea>
+  <div class="idea__track">
+    <div class="idea__stick">
+      <div class="wrap">
+        <div class="shead" style="margin-bottom:clamp(24px,4vh,44px)">
+          <span class="shead__n">01</span><span class="shead__t">The problem</span><span class="shead__r">What a usual search misses</span>
+        </div>
+        <div class="idea__grid">
+          <div>
+            <h2 class="say say--l idea__say">No company sees the <span class="hl">whole</span> market.</h2>
+            <p class="idea__p">Most searches cover the city, the job boards and the agencies you already know. For a hard role, the right person is often just outside them.</p>
+            <p class="idea__p idea__p--2">So the same names come back, and every day the role stays open costs money.</p>
+            <a class="act idea__cost" href="cost.html">Work out what yours costs</a>
+            <div class="idea__read" aria-live="polite">
+              <span class="compare__n">Your search <b class="mono">6</b></span>
+              <span class="compare__n compare__n--v">Outside it <b class="mono" data-idea-out>0</b></span>
+            </div>
+          </div>
+          <div>
+            <div class="idea__frame" role="img" aria-label="A frame that starts on a grey block, the market a company searches, holding six grey squares, and pulls back as you scroll to show thirty-one red squares outside it: people who could do the job outside that search.">
+              <div class="idea__world" data-idea-world><span class="idea__searched"></span><span class="person person--in" style="left:18.8%;top:62.7%"></span><span class="person person--in" style="left:5.0%;top:72.6%"></span><span class="person person--in" style="left:22.5%;top:87.5%"></span><span class="person person--in" style="left:10.3%;top:69.7%"></span><span class="person person--in" style="left:18.0%;top:82.2%"></span><span class="person person--in" style="left:6.8%;top:66.9%"></span><span class="person" data-o style="left:82.1%;top:41.5%"></span><span class="person" data-o style="left:94.6%;top:61.1%"></span><span class="person" data-o style="left:45.0%;top:19.1%"></span><span class="person" data-o style="left:56.7%;top:39.0%"></span><span class="person" data-o style="left:79.2%;top:4.1%"></span><span class="person" data-o style="left:37.5%;top:20.1%"></span><span class="person" data-o style="left:52.4%;top:9.8%"></span><span class="person" data-o style="left:58.8%;top:11.1%"></span><span class="person" data-o style="left:16.9%;top:39.9%"></span><span class="person" data-o style="left:83.1%;top:88.2%"></span><span class="person" data-o style="left:37.9%;top:34.8%"></span><span class="person" data-o style="left:66.3%;top:16.4%"></span><span class="person" data-o style="left:68.6%;top:93.1%"></span><span class="person" data-o style="left:3.2%;top:5.6%"></span><span class="person" data-o style="left:56.2%;top:69.9%"></span><span class="person" data-o style="left:65.1%;top:74.6%"></span><span class="person" data-o style="left:48.7%;top:88.6%"></span><span class="person" data-o style="left:68.9%;top:40.7%"></span><span class="person" data-o style="left:66.8%;top:43.7%"></span><span class="person" data-o style="left:42.2%;top:39.6%"></span><span class="person" data-o style="left:85.9%;top:41.4%"></span><span class="person" data-o style="left:83.3%;top:29.6%"></span><span class="person" data-o style="left:24.4%;top:39.5%"></span><span class="person" data-o style="left:24.9%;top:15.8%"></span><span class="person" data-o style="left:53.7%;top:12.2%"></span><span class="person" data-o style="left:92.1%;top:66.2%"></span><span class="person" data-o style="left:69.7%;top:92.1%"></span><span class="person" data-o style="left:85.0%;top:44.1%"></span><span class="person" data-o style="left:89.5%;top:33.4%"></span><span class="person" data-o style="left:50.9%;top:54.2%"></span><span class="person" data-o style="left:70.0%;top:61.4%"></span></div>
+            </div>
+            <div class="idea__cap">
+              <span class="caption caption--g">Inside your usual search</span>
+              <span class="caption caption--v">Outside it</span>
+              <span class="caption">An illustration, not a count</span>
+            </div>
+          </div>
         </div>
       </div>
-      <figure class="plate plate--col" data-reveal="wipe">
-        <picture>
-          <source type="image/webp" srcset="assets/images/MH_photo_02-640.webp 640w, assets/images/MH_photo_02-1024.webp 1024w, assets/images/MH_photo_02-1536.webp 1536w" sizes="(max-width:1024px) 100vw, 40vw">
-          <img src="assets/images/MH_photo_02-1024.jpg" width="1536" height="1024" loading="lazy" decoding="async"
-               alt="Kraków: the front of an office building seen from across the street, rows of windows, a few of them lit.">
-        </picture>
-        <figcaption class="plate__cap">Kraków · Feb</figcaption>
-      </figure>
     </div>
   </div>
 </section>
@@ -188,7 +194,7 @@
     <div class="shead" data-reveal>
       <span class="shead__n">02</span>
       <span class="shead__t">How it works</span>
-      <span class="shead__r">Research · find · interview · introduce</span>
+      <span class="shead__r">Research · snapshot · recruit</span>
     </div>
 
     <h2 class="say say--m" style="max-width:22ch">We recruit <span class="hl">outside</span> the market you already search.</h2>
@@ -204,8 +210,8 @@
       <li class="step step--fig" data-reveal>
         <div class="mini mini--map" aria-hidden="true"><div class="mini__obj"><span class="mini__field"><i class="mini__g" style="left:22%;top:30%"></i><i class="mini__g" style="left:55%;top:22%"></i><i class="mini__g" style="left:38%;top:60%"></i></span><i class="mini__p" style="left:48%;top:26%"></i><i class="mini__p" style="left:62%;top:58%"></i><i class="mini__p" style="left:74%;top:34%"></i><i class="mini__p" style="left:86%;top:64%"></i><i class="mini__p" style="left:91%;top:32%"></i><i class="mini__p" style="left:56%;top:80%"></i><span class="mini__tag">Counted · dated</span><span class="mini__n">6</span></div></div>
         <span class="step__n">02</span>
-        <h3 class="step__h">We send you a market map</h3>
-        <p>A market map is a short, dated document about one role. It shows how many people could do the job outside your usual search, where they are, and what we do not know. We do not charge for it, and you keep it whether or not you work with us.</p>
+        <h3 class="step__h">We send you a market snapshot</h3>
+        <p>One page for one role: how many people could do the job outside your usual search, where they are, and what we do not know. Free, before you commit, and yours to keep. If you want more depth before deciding, a full market map is priced per role.</p>
       </li>
       <li class="step step--fig" data-reveal>
         <div class="mini mini--intro" aria-hidden="true"><div class="mini__obj"><span class="mini__field"><i class="mini__g" style="left:22%;top:30%"></i><i class="mini__g" style="left:55%;top:22%"></i><i class="mini__g" style="left:38%;top:60%"></i></span><i class="mini__p" style="left:48%;top:26%"></i><i class="mini__p" style="left:62%;top:58%"></i><i class="mini__p" style="left:74%;top:34%"></i><i class="mini__p" style="left:86%;top:64%"></i><i class="mini__p" style="left:91%;top:32%"></i><i class="mini__p" style="left:56%;top:80%"></i><span class="mini__tag">Introduced, with consent</span></div></div>
@@ -215,33 +221,8 @@
       </li>
     </ol>
 
-    <!-- THE DEMONSTRATION: one control, one field. The boundary widens once
-         when the section is reached (the brand's one motion), then the reader
-         moves it themselves. Nothing is added or removed: only the edge of
-         the search moves, and the people it reaches turn grey. -->
-    <div class="compare" data-compare style="margin-top:clamp(48px,6vw,88px)" data-reveal>
-      <div class="compare__head">
-        <div>
-          <span class="label label--ink">Try it · move the edge of the search</span>
-          <p class="compare__say">Every square is one person who could do the job. Grey squares are inside your usual search. Red squares are outside it.</p>
-        </div>
-        <div class="compare__ctl">
-          <label class="label" for="boundary">Width of your search</label>
-          <input class="slider" id="boundary" type="range" min="8" max="72" value="14" step="1">
-        </div>
-      </div>
-      <div class="compare__plot" aria-hidden="true">
-        <div class="compare__searched"></div>
-      </div>
-      <div class="compare__foot">
-        <span class="compare__n">Inside your search <b class="mono" data-in>0</b></span>
-        <span class="compare__n compare__n--v">Outside it <b class="mono" data-out>0</b></span>
-        <span class="compare__note small">The market stays the same. Only the edge of the search moves.</span>
-      </div>
-    </div>
-
     <div class="btnrow" style="margin-top:32px">
-      <a class="act" href="evidence.html">See a full market map</a>
+      <a class="act" href="evidence.html">See an example map</a>
     </div>
   </div>
 </section>
@@ -286,21 +267,21 @@
     </div>
     <div class="cols cols--aside docs__head">
       <h2 class="say say--m" style="max-width:20ch">Everything we do arrives in writing.</h2>
-      <p data-reveal>A market map before you commit to anything, a short proposal if you want to go ahead, and a written summary of every person we introduce.</p>
+      <p data-reveal>A market snapshot before you commit to anything, a short proposal if you want to go ahead, and a written summary of every person we introduce.</p>
     </div>
     <div class="sheets" data-reveal>
       <article class="sheet">
         <span class="label">Document 01</span>
-        <h3 class="hd--s" style="margin-top:10px">The market map</h3>
+        <h3 class="hd--s" style="margin-top:10px">The market snapshot</h3>
         <div class="sheet__body">
           <div class="sheet__mini" aria-hidden="true">
             <span class="field"></span>
             <span class="person" style="left:46%;top:28%"></span><span class="person" style="left:60%;top:60%"></span>
             <span class="person" style="left:74%;top:20%"></span><span class="person" style="left:86%;top:50%"></span>
           </div>
-          <p class="small" style="margin-top:14px">Who could do your role, how many there are and where, with what we could not measure on the same page.</p>
+          <p class="small" style="margin-top:14px">One page: who could do your role, how many there are and where, with what we could not measure on the same page.</p>
         </div>
-        <div class="sheet__foot"><span class="caption">One role · dated</span><span class="caption">No charge</span></div>
+        <div class="sheet__foot"><span class="caption">One role · dated</span><span class="caption">Free · before you commit</span></div>
       </article>
       <article class="sheet">
         <span class="label">Document 02</span>
@@ -351,7 +332,7 @@
       <div><div class="fig__n hl">20/29</div><span class="label fig__l">Share of all our recorded placements</span></div>
     </div>
 
-    <div class="cols cols--2" style="margin-top:clamp(40px,5vw,72px)">
+    <div style="margin-top:clamp(40px,5vw,72px);max-width:760px">
       <div data-reveal>
         <span class="label label--ink">The concentration, drawn</span>
         <div class="tally" style="margin-top:18px" role="img"
@@ -363,16 +344,6 @@
           <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
         </div>
         <p class="small" style="margin-top:16px">Filled: one client. Outlined: the other seven companies, five of which appear once.</p>
-      </div>
-      <div class="cols cols--2" style="gap:28px">
-        <div data-reveal>
-          <span class="label label--ink">What this shows</span>
-          <p class="small" style="margin-top:14px">One company kept hiring people it could not reach on its own, across nine unrelated kinds of job, through us, over more than three years.</p>
-        </div>
-        <div data-reveal>
-          <span class="label label--ink">What it does not show</span>
-          <p class="small" style="margin-top:14px">That this will repeat with other companies. The record lists placements only, so it cannot support a success rate, and we do not quote one. We do not know how many of the twenty are still in the job. One placement fell through.</p>
-        </div>
       </div>
     </div>
 
@@ -387,8 +358,7 @@
   <figure class="plate plate--half" data-reveal="wipe">
     <picture>
       <source type="image/webp" srcset="assets/images/MH_photo_07-640.webp 640w, assets/images/MH_photo_07-1024.webp 1024w, assets/images/MH_photo_07-1536.webp 1536w" sizes="100vw">
-      <img src="assets/images/MH_photo_07-1024.jpg" width="1536" height="1024" loading="lazy" decoding="async"
-           alt="Valencia: someone standing at the railing of a covered walkway, looking out over the city.">
+      <img src="assets/images/MH_photo_07-1536.jpg" width="1536" height="1024" loading="lazy" decoding="async" alt="Valencia: someone standing at the railing of a covered walkway, looking out over the city.">
     </picture>
     <figcaption class="plate__cap">Valencia · Sep</figcaption>
   </figure>
@@ -403,10 +373,10 @@
     <div class="shead" data-reveal>
       <span class="shead__n">06</span>
       <span class="shead__t">The people</span>
-      <span class="shead__r">For employers · names follow with consent</span>
+      <span class="shead__r">Example profiles · names follow with consent</span>
     </div>
     <div class="cols cols--aside talent__head">
-      <h2 class="say say--m">Browse people we've already <span class="hl">spoken</span> to.</h2>
+      <h2 class="say say--m">See the <span class="hl">person</span> before the name.</h2>
       <p data-reveal>Role, experience, place and pay first. The name follows when they agree to talk.</p>
     </div>
     <div class="talent" data-talent-grid></div>
@@ -422,23 +392,22 @@
     <h2 class="say say--l">We'll show you the <span class="hl">market</span> before we ask you for anything.</h2>
     <ol class="steps steps--4 steps--rev" style="margin-top:clamp(40px,6vh,72px)">
       <li class="step"><span class="step__n">01</span><h3 class="step__h">You write to us</h3><p>Tell us one role and where it is based. We ask one question back: can you employ someone who is not local?</p></li>
-      <li class="step"><span class="step__n">02</span><h3 class="step__h">We send the market map</h3><p>For that one role. You keep it whether or not we work together.</p></li>
+      <li class="step"><span class="step__n">02</span><h3 class="step__h">We send a snapshot</h3><p>If we can take the role on: one page for it, free, before you commit. You keep it whether or not we work together.</p></li>
       <li class="step"><span class="step__n">03</span><h3 class="step__h">We agree the brief</h3><p>If you want to go ahead: your standard, the pay, the process, and who decides.</p></li>
       <li class="step"><span class="step__n">04</span><h3 class="step__h">You meet people</h3><p>We introduce the people worth meeting, with notes from our interviews and a list of who we ruled out.</p></li>
     </ol>
     <div class="btnrow promise__act">
-      <a class="btn btn--primary btn--rev" href="contact.html">Request a market map</a>
-      <span class="small promise__or">Or write to <a class="link" href="mailto:tino@mcmurry-hughes.com">tino@mcmurry-hughes.com</a></span>
+      <a class="btn btn--primary btn--rev" href="contact.html">Tell us the role</a>
+      <span class="small promise__or">Or write to <span style="user-select:all">tino@mcmurry-hughes.com</span></span>
     </div>
   </div>
 </section>
 
 </main>
 
-<!-- ── footer ─────────────────────────────────────────────────────────── -->
 <footer class="foot">
   <div class="wrap">
-    <div class="foot__grid">
+    <div class="foot__grid foot__grid--5">
       <div>
         <img class="foot__mark" src="assets/icons/MH_lockup_horizontal.svg" width="192" height="24" alt="McMurry &amp; Hughes">
         <p class="small foot__line">An outside recruiting desk. We recruit for companies in the markets their own search doesn't reach.</p>
@@ -450,7 +419,8 @@
           <a href="how-we-work.html#fit">Who we can help</a>
           <a href="evidence.html">Evidence</a>
           <a href="talent.html">Talent</a>
-          <a href="contact.html">Request a market map</a>
+          <a href="cost.html">Cost of an open role</a>
+          <a href="contact.html">Tell us the role</a>
         </div>
       </div>
       <div>
@@ -461,17 +431,25 @@
         </div>
       </div>
       <div>
+        <span class="label label--ink">McMurry &amp; Hughes also</span>
+        <div class="foot__list">
+          <a href="recruiting-firms.html">Research for recruiting firms</a>
+          <a href="https://pcr-latam.com/" target="_blank" rel="noopener">PCR-Latam</a>
+          <a href="https://data2clean.com/" target="_blank" rel="noopener">Data2Clean</a>
+          <a href="about.html">About the group</a>
+        </div>
+      </div>
+      <div>
         <span class="label label--ink">Contact</span>
         <div class="foot__list">
           <span>Tino Langner</span>
-          <a href="mailto:tino@mcmurry-hughes.com">tino@mcmurry-hughes.com</a>
-          <a href="https://www.linkedin.com/company/mcmurry-&amp;-hughes/" target="_blank" rel="noopener" aria-label="McMurry &amp; Hughes on LinkedIn (opens in a new tab)">LinkedIn</a>
+          <span style="user-select:all">tino@mcmurry-hughes.com</span>
           <span>San José · Costa Rica</span>
         </div>
       </div>
     </div>
     <div class="foot__note">
-      <span>&copy; <span data-year>2026</span> McMurry &amp; Hughes</span>
+      <span>&copy; 2026 McMurry &amp; Hughes</span>
       <span>Hiring for Germany · Europe · United States · Canada</span>
     </div>
   </div>

@@ -1,0 +1,288 @@
+/* Site additions: nav with About, the calculator, the snapshot window, the
+   five-column footer, the problem pull-back. Loaded after motion.css. */
+/* =========================================================================
+   McMURRY & HUGHES — additions.css            PROTOTYPE · NOT YET APPROVED
+   Everything the September 2026 business-model update needed that the
+   current site did not already have. Kept in one file so it can be reviewed,
+   accepted or removed without touching main.css or components.css.
+
+   Nothing here introduces a colour, a family, a radius, a shadow style or a
+   device that the brand book does not already contain. Each block is marked
+   PROPOSED BRAND-BOOK ADDITION where it extends the system.
+
+     19  navigation with a third audience        (proposed addition)
+     20  the calculator                          (proposed addition)
+     21  the snapshot document                   (proposed addition)
+     22  routes for recruiting firms             (proposed addition)
+     23  the company ledger (About)              (reuses the ledger)
+     24  the illustrative flag                   (review aid)
+     25  the prototype strip + review page       (review aid, not for launch)
+   ========================================================================= */
+
+/* ── 19 · NAVIGATION — A THIRD AUDIENCE ────────────────────────────────── */
+/* Employers, then job seekers, then recruiting firms and About, then the one
+   action, always last. Same link style, same rule between groups. */
+.nav__links{gap:22px}
+.nav__firms{padding-left:22px;border-left:1px solid var(--hair)}
+/* With a third group the bar needs about 1240px on one line, so the panel
+   takes over at 1240 instead of 1100 (the panel rules are the current
+   site's, repeated at the new width). */
+.nav__link{white-space:nowrap}
+@media (max-width:1240px){
+  .nav__toggle{display:inline-flex;align-items:center}
+  /* the mark and the Close control stay above the panel, so neither vanishes
+     while the panel is open */
+  .nav .mark,.nav__toggle{position:relative;z-index:80}
+  .nav__panel{
+    display:block;position:fixed;inset:0;z-index:70;
+    background:var(--paper);
+    padding:96px var(--gutter) 40px;
+    transform:translateY(-100%);
+    transition:transform .5s var(--ease);
+    visibility:hidden;
+  }
+  .nav[data-open="true"] .nav__panel{transform:none;visibility:visible}
+  .nav[data-open="true"]{background:var(--paper);border-bottom-color:transparent}
+  .nav__links{flex-direction:column;align-items:flex-start;gap:0}
+  .nav__links li{width:100%}
+  .nav__link{
+    display:block;font-size:13px;letter-spacing:.18em;width:100%;
+    padding:18px 0;border-bottom:1px solid var(--hairsoft);
+  }
+  .nav__link[aria-current="page"]{border-bottom-color:var(--ink)}
+  /* two audiences, two groups, each with a heading */
+  .nav__group{
+    display:block;padding:26px 0 6px;
+    font-family:var(--M);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--slate);
+  }
+  .nav__group:first-child{padding-top:0}
+  .nav__cta{margin:26px 0 0}
+  .nav__cta .btn{width:100%}
+  .nav__seek,.nav__firms{padding-left:0;border-left:0}
+  .nav[data-open="true"] .nav__panel{overflow-y:auto}
+}
+
+
+@media (max-width:1100px){ .nav__firms,.nav__seek{padding-left:0;border-left:0} }
+/* the review strip steps aside while the menu panel is open */
+.nav[data-open="true"] ~ .proto{display:none}
+
+/* footer: four columns after the lockup */
+.foot__grid--5{grid-template-columns:minmax(0,1.3fr) repeat(4,minmax(0,1fr))}
+@media (max-width:1280px){ .foot__grid--5{grid-template-columns:repeat(3,minmax(0,1fr))} .foot__grid--5 > :first-child{grid-column:1 / -1} }
+@media (max-width:768px){ .foot__grid--5{grid-template-columns:1fr} }
+.foot__endorse{margin-top:14px;font-size:14px;color:var(--slate);max-width:36ch}
+
+/* ── 20 · THE CALCULATOR ───────────────────────────────────────────────── */
+/* PROPOSED BRAND-BOOK ADDITION. Built from the demonstration's own parts:
+   a hairline-ruled object with an ink border (.compare), form fields from
+   .field and .choice, figures set in Plex Mono 500 and never counted up.
+   No grey anywhere in it — the calculator is about money and time, not the
+   searched market, so grey would be a false statement. No vermilion either,
+   except the section index, as everywhere else. */
+
+.calc{border:1px solid var(--ink);background:var(--paper)}
+.calc__part{padding:clamp(20px,2.6vw,36px)}
+.calc__part + .calc__part{border-top:1px solid var(--ink)}
+.calc__head{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 20px;margin-bottom:clamp(20px,2.4vw,32px)}
+.calc__step{font-family:var(--M);font-weight:500;font-size:12px;letter-spacing:.2em;color:var(--verm)}
+.calc__title{font-weight:600;font-size:clamp(19px,1.5vw,23px);letter-spacing:-.026em;line-height:1.14}
+.calc__aside{margin-left:auto;color:var(--slate)}
+
+.calc__grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:start}
+.calc__fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 28px}
+.calc__fields .field{margin-bottom:24px}
+.calc__fields .field--wide{grid-column:1 / -1}
+.calc .choice label{font-size:15px;padding:0 16px;min-height:44px}
+.calc .choice input[type="checkbox"] + label{padding:0 16px}
+
+/* the result: figures, set, with the working shown beneath */
+.calc__out{border-top:1px solid var(--ink);padding-top:18px}
+.calc__big{font-family:var(--M);font-weight:500;font-size:clamp(28px,3vw,40px);line-height:1.05;
+  font-variant-numeric:tabular-nums lining-nums;letter-spacing:-.02em;color:var(--ink)}
+.calc__unit{font-family:var(--M);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);margin-top:8px;display:block}
+.calc__rows{margin-top:22px}
+.calc__rows td.q{font-size:18px}
+.calc__work{margin-top:18px;padding-top:14px;border-top:1px solid var(--hairsoft)}
+.calc__work code{display:block;font-family:var(--M);font-size:12px;line-height:1.8;color:var(--ink);white-space:normal}
+.calc__work p{font-size:14px;margin-top:10px}
+.calc__empty{color:var(--slate);font-size:15px}
+
+/* the diagnosis: one sentence, one reason, one next step */
+.calc__verdict{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:start}
+.calc__verdict .say{max-width:18ch}
+.calc__why{font-size:16px}
+.calc__verdict[hidden]{display:none}
+.calc__wait{font-size:15px;color:var(--slate)}
+
+@media (max-width:1023px){
+  .calc__grid,.calc__verdict{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .calc__fields{grid-template-columns:1fr}
+  .calc__aside{margin-left:0}
+}
+
+/* ── 21 · THE SNAPSHOT DOCUMENT ────────────────────────────────────────── */
+/* PROPOSED BRAND-BOOK ADDITION. A one-page document drawn as a sheet: the
+   same paper, hairline and lift as the three documents already on the site.
+   Its window is the market window at document scale — grey is allowed here
+   because it means the client's searched market, and the people outside it
+   are vermilion. Every figure carries its base and its date. */
+
+.snap{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(32px,5vw,88px);align-items:start}
+.snapdoc{background:var(--paper);border:1px solid var(--hair);box-shadow:0 1px 2px rgba(14,15,18,.04),0 18px 46px rgba(14,15,18,.08);
+  padding:clamp(20px,2.4vw,32px)}
+.snapdoc__top{display:flex;justify-content:space-between;gap:16px;align-items:baseline;padding-bottom:12px;border-bottom:1px solid var(--ink)}
+.snapdoc__title{font-weight:600;font-size:clamp(19px,1.6vw,24px);letter-spacing:-.026em;line-height:1.15;margin-top:18px}
+.snapdoc__win{position:relative;aspect-ratio:3/1.35;border:1px solid var(--ink);overflow:hidden;margin-top:20px}
+.snapdoc__win .snapdoc__field{position:absolute;left:0;bottom:0;width:13%;height:40%;background:var(--field);border-top:2px solid var(--ink);border-right:2px solid var(--ink)}
+.snapdoc__win .person{position:absolute;width:7px;height:7px;background:var(--verm)}
+.snapdoc__win .person--in{background:var(--grey)}
+.snapdoc__win .hatch{position:absolute;right:0;top:0;bottom:0;width:14%}
+.snapdoc .ledger td{font-size:15px;padding:12px 18px 12px 0}
+.snapdoc .ledger .t{width:36%}
+.snapdoc__foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 18px;margin-top:16px;padding-top:12px;border-top:1px solid var(--hairsoft)}
+
+.snap__side .say{max-width:16ch}
+.snap__who{margin-top:26px}
+.snap__map{margin-top:clamp(40px,5vw,72px);padding-top:18px;border-top:1px solid var(--ink)}
+
+@media (max-width:1023px){ .snap{grid-template-columns:1fr} }
+
+/* ── 22 · ROUTES FOR RECRUITING FIRMS ──────────────────────────────────── */
+/* PROPOSED BRAND-BOOK ADDITION. Three routes set as the step columns already
+   are (ink rule above, mono index, a heading, plain text) — not as cards.
+   Endorsed companies are named in type with the endorsement line beneath;
+   their own logos are placed from their own files when approved, and are
+   never approximated here. */
+
+.routes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,3vw,48px)}
+.route{padding-top:16px;border-top:1px solid var(--ink);display:flex;flex-direction:column}
+.route__n{font-family:var(--M);font-weight:500;font-size:12px;letter-spacing:.2em;color:var(--verm)}
+.route__name{font-weight:700;font-size:clamp(24px,2.2vw,32px);letter-spacing:-.035em;line-height:1;margin-top:18px}
+.route__desc{font-family:var(--M);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--slate);margin-top:10px}
+.route__endorse{font-family:var(--M);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);margin-top:10px}
+.route p{margin-top:16px;font-size:16px}
+.route .list{margin-top:16px;font-size:15px}
+.route__buy{margin-top:18px;padding-top:12px;border-top:1px solid var(--hairsoft);font-size:15px;color:var(--slate)}
+.route__act{margin-top:auto;padding-top:20px}
+
+/* the quiet route on the home page: small, one statement, one text action */
+.firms{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:clamp(24px,4vw,72px);align-items:end}
+.firms__list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.firms__list div{padding-top:12px;border-top:1px solid var(--hair)}
+.firms__list b{display:block;font-weight:600;color:var(--ink);font-size:16px}
+.firms__list span{display:block;font-size:14px;color:var(--slate);margin-top:4px}
+
+@media (max-width:1023px){ .routes{grid-template-columns:1fr} .firms{grid-template-columns:1fr} }
+@media (max-width:560px){ .firms__list{grid-template-columns:1fr} }
+
+/* ── 23 · THE DESK LADDER ──────────────────────────────────────────────── */
+/* One role, another role, an ongoing relationship. Three ruled columns with
+   a step index; the third is marked as agreed per employer, never priced. */
+.ladder{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,48px)}
+.ladder > div{padding-top:16px;border-top:1px solid var(--ink)}
+.ladder__n{font-family:var(--M);font-weight:500;font-size:12px;letter-spacing:.2em;color:var(--verm)}
+.ladder h3{font-weight:600;font-size:clamp(20px,1.7vw,25px);letter-spacing:-.025em;line-height:1.15;margin-top:14px}
+.ladder p{margin-top:12px;font-size:16px}
+@media (max-width:768px){ .ladder{grid-template-columns:1fr} }
+
+/* ── 24 · THE ILLUSTRATIVE FLAG ────────────────────────────────────────── */
+/* Anything generated for the build says so, on the page, beside itself.
+   Ink hairline and Plex Mono only. */
+.illus{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;
+  padding:10px 0;border-top:1px solid var(--ink);border-bottom:1px solid var(--hairsoft);margin-bottom:24px}
+.illus b{font-family:var(--M);font-weight:500;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink)}
+.illus span{font-size:14px;color:var(--slate)}
+
+/* ── 25 · PROTOTYPE STRIP + REVIEW PAGE (review aid — remove before launch) ── */
+.proto{
+  position:fixed;left:0;right:0;bottom:0;z-index:90;
+  background:var(--ink);color:var(--paper);
+  display:flex;flex-wrap:wrap;gap:6px 22px;align-items:center;justify-content:space-between;
+  padding:8px var(--gutter);
+  font-family:var(--M);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+}
+.proto a{color:var(--paper);text-decoration:underline;text-decoration-color:var(--hair-rev);text-underline-offset:4px}
+.proto a:hover{text-decoration-color:var(--paper)}
+.proto__r{display:flex;gap:18px;flex-wrap:wrap}
+body.has-proto{padding-bottom:40px}
+body.has-proto .rail{bottom:40px}
+
+.review h2{margin-top:clamp(40px,5vw,64px)}
+.review .ledger td{font-size:15px}
+.review .ledger .t{width:26%}
+.review .list{margin-top:14px}
+
+/* the address stays whole in the five-column footer */
+@media (min-width:1281px){ .foot__list a[href^="mailto"]{white-space:nowrap} }
+
+/* =========================================================================
+   McMURRY & HUGHES — additions-d.css      PROTOTYPE D · THE LIVE SITE, CORRECTED
+   Only what D adds to v1: the scroll pull-back (from Prototype B, now the
+   problem section), a fourth footer column, and the review strip.
+   ========================================================================= */
+html,body{background:var(--paper)}
+.has-proto{padding-bottom:40px}
+.proto{padding-bottom:calc(8px + env(safe-area-inset-bottom, 0px))}
+/* ── the idea: the view widens as you scroll ───────────────────────────── */
+/* One object. At the top of the section the frame shows only the searched
+   market, close up. Scrolling pulls the view back, and the people outside it
+   come into the frame. Nothing is added: the market was always this size.
+   Scroll-scrubbed, transform only, no easing past the reader's hand. Under
+   reduced motion the view is simply wide. */
+.idea{position:relative}
+.idea__track{height:230vh}
+.idea__stick{
+  position:sticky;top:0;height:100vh;height:100svh;
+  display:flex;align-items:center;
+}
+.idea__grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(32px,5vw,88px);align-items:center;width:100%}
+.idea__say{max-width:11ch}
+.idea__p{margin-top:24px;max-width:34ch}
+.idea__read{margin-top:32px;display:grid;gap:10px}
+.idea__read .compare__n b{font-size:22px}
+.idea__read .compare__n{display:flex;align-items:baseline;gap:4px}
+
+.idea__frame{position:relative;width:100%;aspect-ratio:3/2;max-width:100%;border:1px solid var(--ink);overflow:hidden;background:var(--paper)}
+.idea__world{position:absolute;inset:0;transform-origin:0% 100%;will-change:transform}
+.idea__searched{position:absolute;left:0;bottom:0;width:34%;height:46%;background:var(--field);border-top:2px solid var(--ink);border-right:2px solid var(--ink)}
+.idea__world .person{width:8px;height:8px}
+.idea__world .person--in{background:var(--grey)}
+.idea__tag{position:absolute;left:14px;top:12px;z-index:2}
+.idea__cap{display:flex;flex-wrap:wrap;gap:6px 22px;margin-top:14px;padding-top:10px;border-top:1px solid var(--hairsoft)}
+
+@media (max-width:1023px){
+  .idea__grid{grid-template-columns:1fr;gap:28px}
+  .idea__say{max-width:16ch}
+  .idea__read{margin-top:18px;grid-auto-flow:column;justify-content:start;gap:24px}
+}
+@media (prefers-reduced-motion:reduce){
+  .idea__track{height:auto}
+  .idea__stick{position:static;height:auto;padding-block:var(--band)}
+  .idea__world{transform:none !important}
+}
+
+
+/* v1 set the problem at the top of a normal section; the pull-back needs the
+   section head inside the pinned frame */
+.idea .shead{margin-bottom:28px}
+@media (max-width:1023px){ .idea .shead{margin-bottom:18px} .idea__p{margin-top:14px} }
+@media (max-height:760px) and (min-width:1024px){ .idea__say{font-size:clamp(30px,3.6vw,52px)} }
+.idea__cost{display:inline-block;margin-top:14px}
+@media (max-width:1023px){ .idea__cost{margin-top:8px} }
+.idea__p--2{margin-top:12px;color:var(--ink)}
+@media (max-width:1023px){ .idea__p--2{margin-top:8px} }
+/* one flat row on desktop: no fences between audiences */
+@media (min-width:1241px){ .nav__seek,.nav__firms{padding-left:0;border-left:0} }
+/* Step numbers: small type, so vermilion fails contrast on bone and ink.
+   Vermilion stays for the person outside the search; numbers are ink. */
+.step__n{color:var(--ink)}
+.section--ink .step__n,.steps--rev .step__n{color:var(--paper)}
+/* document card footers: each label stays on one line, the pair wraps */
+.sheet__foot{flex-wrap:wrap;gap:6px 18px}
+.sheet__foot .caption{white-space:nowrap}
+/* the rail's words meet AA contrast on paper (10 px type) */
+.rail__label,.rail__n{color:var(--slate)}
+.rail--rev .rail__label,.rail--rev .rail__n{color:rgba(252,252,250,.72)}

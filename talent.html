@@ -12,12 +12,12 @@
 <meta property="og:title" content="Talent · McMurry &amp; Hughes">
 <meta property="og:description" content="You see the person before you see the name.">
 <meta property="og:url" content="https://www.mcmurry-hughes.com/talent.html">
-<meta property="og:image" content="https://www.mcmurry-hughes.com/assets/images/MH_photo_07-1024.jpg">
+<meta property="og:image" content="https://www.mcmurry-hughes.com/assets/images/MH_photo_07-1536.jpg">
 <meta property="og:locale" content="en_GB">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Talent · McMurry &amp; Hughes">
 <meta name="twitter:description" content="You see the person before you see the name.">
-<meta name="twitter:image" content="https://www.mcmurry-hughes.com/assets/images/MH_photo_07-1024.jpg">
+<meta name="twitter:image" content="https://www.mcmurry-hughes.com/assets/images/MH_photo_07-1536.jpg">
 <meta name="theme-color" content="#FCFCFA">
 
 <link rel="icon" href="favicon.ico" sizes="any">
@@ -32,6 +32,7 @@
 <link rel="stylesheet" href="css/components.css">
 <link rel="stylesheet" href="css/responsive.css">
 <link rel="stylesheet" href="css/motion.css">
+<link rel="stylesheet" href="css/site.css">
 
 <script type="module" src="js/main.js"></script>
 </head>
@@ -52,15 +53,14 @@
         <li><a class="nav__link" href="talent.html" aria-current="page">Talent</a></li>
         <li class="nav__group" aria-hidden="true">For job seekers</li>
         <li class="nav__seek"><a class="nav__link" href="jobs.html">Jobs</a></li>
-        <li class="nav__cta"><a class="btn btn--primary btn--s" href="contact.html">Request a market map</a></li>
+        <li class="nav__group" aria-hidden="true">The company</li>
+        <li class="nav__firms"><a class="nav__link" href="about.html">About</a></li>
+        <li class="nav__cta"><a class="btn btn--primary btn--s" href="contact.html">Tell us the role</a></li>
       </ul>
     </nav>
     <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-panel">Menu</button>
   </div>
 </header>
-
-<!-- the page rail (search trace): a visual record of where the reader is.
-     Decorative; the headings carry the same structure for assistive tech. -->
 <div class="rail" aria-hidden="true">
   <span class="rail__n">01</span>
   <span class="rail__line"></span>
@@ -78,14 +78,14 @@
     <p class="small phead__more">This page is for employers. If you are looking for a job, go to the <a class="link" href="jobs.html">jobs page</a>.</p>
     <div class="phead__meta">
       <span class="label">Names follow with consent</span>
-      <span class="label">Every profile interviewed by us</span>
+      <span class="label">Example profiles until real ones are cleared</span>
     </div>
   </div>
 </section>
 
 <section class="section section--tight" id="profiles" data-rail="The people" data-talent>
   <div class="wrap">
-    <div class="shead" data-reveal><span class="shead__n">01</span><span class="shead__t">Profiles</span><span class="shead__r">Filter by role, place, language and availability</span></div>
+    <div class="shead" data-reveal><span class="shead__n">01</span><span class="shead__t">Profiles</span><span class="shead__r">Example profiles · filter by role, place, language and availability</span></div>
 
     <div class="cols cols--5 talent__filters" data-talent-filters></div>
 
@@ -97,7 +97,7 @@
     <div class="talent" data-talent-grid></div>
 
     <div class="empty" data-talent-empty hidden>
-      <p>Nobody here matches those filters yet. For most roles, the right person is not on this page until we research the market for it. <a class="link" href="contact.html">Request a market map</a>.</p>
+      <p>Nobody here matches those filters yet. For most roles, the right person is not on this page until we research the market for it. <a class="link" href="contact.html">Tell us the role</a>.</p>
     </div>
   </div>
 </section>
@@ -119,8 +119,8 @@
       </div>
       <div data-reveal>
         <span class="label label--ink">This is not a database</span>
-        <p class="small" style="margin-top:12px">For most roles the right person is not on any list yet. They are in a market nobody has researched for your role. That research is the service, and it starts with a market map.</p>
-        <div class="btnrow" style="margin-top:22px"><a class="btn btn--primary" href="contact.html">Request a market map</a></div>
+        <p class="small" style="margin-top:12px">For most roles the right person is not on any list yet. They are in a market nobody has researched for your role. That research is part of the service, and for roles we can take on it starts with a free market snapshot.</p>
+        <div class="btnrow" style="margin-top:22px"><a class="btn btn--primary" href="contact.html">Tell us the role</a></div>
       </div>
     </div>
   </div>
@@ -133,7 +133,7 @@
     <h2 class="hd" id="ask-h" style="margin-top:12px">Ask about this candidate</h2>
     <p class="small" id="ask-d" style="margin-top:12px">We go back to the person before we introduce anyone. Tell us what you are hiring for.</p>
     <form class="form" style="margin-top:28px" novalidate data-form data-subject="Enquiry from the talent page"
-          action="mailto:tino@mcmurry-hughes.com" method="post" enctype="text/plain">
+         >
       <input type="hidden" name="profile" value="">
       <div class="field"><label class="label" for="a-name">Name</label><input id="a-name" name="name" type="text" autocomplete="name" required><span class="field__err">Please add your name</span></div>
       <div class="field"><label class="label" for="a-company">Company</label><input id="a-company" name="company" type="text" autocomplete="organization" required><span class="field__err">Please add your company</span></div>
@@ -150,7 +150,7 @@
 
 <footer class="foot">
   <div class="wrap">
-    <div class="foot__grid">
+    <div class="foot__grid foot__grid--5">
       <div>
         <img class="foot__mark" src="assets/icons/MH_lockup_horizontal.svg" width="192" height="24" alt="McMurry &amp; Hughes">
         <p class="small foot__line">An outside recruiting desk. We recruit for companies in the markets their own search doesn't reach.</p>
@@ -162,7 +162,8 @@
           <a href="how-we-work.html#fit">Who we can help</a>
           <a href="evidence.html">Evidence</a>
           <a href="talent.html">Talent</a>
-          <a href="contact.html">Request a market map</a>
+          <a href="cost.html">Cost of an open role</a>
+          <a href="contact.html">Tell us the role</a>
         </div>
       </div>
       <div>
@@ -173,17 +174,25 @@
         </div>
       </div>
       <div>
+        <span class="label label--ink">McMurry &amp; Hughes also</span>
+        <div class="foot__list">
+          <a href="recruiting-firms.html">Research for recruiting firms</a>
+          <a href="https://pcr-latam.com/" target="_blank" rel="noopener">PCR-Latam</a>
+          <a href="https://data2clean.com/" target="_blank" rel="noopener">Data2Clean</a>
+          <a href="about.html">About the group</a>
+        </div>
+      </div>
+      <div>
         <span class="label label--ink">Contact</span>
         <div class="foot__list">
           <span>Tino Langner</span>
-          <a href="mailto:tino@mcmurry-hughes.com">tino@mcmurry-hughes.com</a>
-          <a href="https://www.linkedin.com/company/mcmurry-&amp;-hughes/" target="_blank" rel="noopener" aria-label="McMurry &amp; Hughes on LinkedIn (opens in a new tab)">LinkedIn</a>
+          <span style="user-select:all">tino@mcmurry-hughes.com</span>
           <span>San José · Costa Rica</span>
         </div>
       </div>
     </div>
     <div class="foot__note">
-      <span>&copy; <span data-year>2026</span> McMurry &amp; Hughes</span>
+      <span>&copy; 2026 McMurry &amp; Hughes</span>
       <span>Hiring for Germany · Europe · United States · Canada</span>
     </div>
   </div>

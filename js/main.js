@@ -60,7 +60,7 @@ function nav() {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && el.dataset.open === 'true') { set(false); toggle.focus(); }
   });
-  window.matchMedia('(min-width: 1101px)').addEventListener('change', (m) => { if (m.matches) set(false); });
+  window.matchMedia('(min-width: 1241px)').addEventListener('change', (m) => { if (m.matches) set(false); });
 }
 
 /* ── forms ────────────────────────────────────────────────────────────── */
@@ -291,11 +291,26 @@ export function openDialog(id, fill) {
 /* ── page modules ─────────────────────────────────────────────────────── */
 /* Loaded on demand. A visitor reading the jobs page never downloads the map. */
 
+/* PROTOTYPE: the single-file review bundle registers its modules on
+   window.__MODS; the multi-file site imports them on demand as before. */
+const mod = (key, path) => (window.__MODS?.[key] ? Promise.resolve(window.__MODS[key]) : import(path));
+
 async function pages() {
+  const calcRoot = document.querySelector('[data-calc]');
+  if (calcRoot) {
+    const c = await mod('calc', './calculator.js');
+    c.calculator(calcRoot, { contactHref: window.__BUNDLE ? '#/contact' : 'contact.html' });
+  }
+  const pre = document.querySelector('form[data-prefill]');
+  if (pre && !window.__BUNDLE) {
+    const c = await mod('calc', './calculator.js');
+    c.prefill(pre, new URLSearchParams(location.search));
+  }
+
   const mapRoot = document.querySelector('[data-map]');
   const compareRoot = document.querySelector('[data-compare]');
   if (mapRoot || compareRoot) {
-    const m = await import('./market-map.js');
+    const m = await mod('map', './market-map.js');
 
     if (mapRoot) {
       new m.MarketMap(mapRoot);
@@ -309,11 +324,11 @@ async function pages() {
 
   const talentRoot = document.querySelector('[data-talent]');
   if (talentRoot) {
-    const t = await import('./talent.js');
+    const t = await mod('talent', './talent.js');
     const ask = (id) => {
       /* the home page shows the cards but not the form: go to the talent
          page, which opens the question for that profile */
-      if (!document.getElementById('ask')) { window.location.href = `talent.html#ask-${id}`; return; }
+      if (!document.getElementById('ask')) { window.location.href = window.__BUNDLE ? `#/talent` : `talent.html#ask-${id}`; return; }
       const ref = `Talent #${id}`;
       openDialog('ask', (d) => {
         d.querySelector('[data-ref]').textContent = ref;
@@ -327,7 +342,7 @@ async function pages() {
 
   const jobsRoot = document.querySelector('[data-jobs]');
   if (jobsRoot) {
-    const j = await import('./jobs.js');
+    const j = await mod('jobs', './jobs.js');
     const fill = (ref, heading) => (d) => {
       d.querySelector('[data-ref]').textContent = ref;
       d.querySelector('input[name="role"]').value = ref;
@@ -357,7 +372,7 @@ function boot() {
   window.addEventListener('resize', sbw, { passive: true });
 
   nav();
-  rail();
+  if (!window.__BUNDLE) rail();
   reveal();
   forms();
   attachments();
@@ -370,13 +385,14 @@ function boot() {
   drift('.mini__p', { amp: 12, seed: 3, min: 3.8, max: 5.6 });
   drift('.mini__g', { amp: 7, seed: 4, min: 3.8, max: 5.6 });
   drift('.sheet__mini .person', { amp: 7, seed: 9, min: 3.8, max: 5.6 });
+  drift('.snapdoc__win .person', { amp: 5, seed: 21, min: 3.8, max: 5.6 });
 
 
   document.querySelectorAll('[data-year]').forEach((el) => {
     el.textContent = String(new Date().getFullYear());
   });
 
-  pages();
+  pages().then(() => window.__AFTERBOOT?.());
 
   if (reduced.matches) document.documentElement.dataset.reduced = 'true';
 }
